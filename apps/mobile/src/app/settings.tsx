@@ -4,7 +4,8 @@ import { goBack, goHome } from '../ui/nav';
 import { useState } from 'react';
 import { Pressable, ScrollView, TextInput, View } from 'react-native';
 import { frozen, frozenCount, provider } from '../state/engine';
-import { resetState, setState, useStore } from '../state/store';
+import { addContact, removeContact, wipeAll } from '../state/actions';
+import { useStore } from '../state/store';
 import { useTheme, type ThemePref } from '../theme/ThemeContext';
 import { font } from '../theme/tokens';
 import { Eyebrow, GhostButton, Glass, Icon, RoundButton, Screen, Txt } from '../ui/kit';
@@ -14,6 +15,8 @@ const PREFS: { id: ThemePref; label: string }[] = [
   { id: 'dark', label: 'Dark' },
   { id: 'light', label: 'Light' },
 ];
+
+const LEVEL_TEXT = { stop: 'Stop', check_more: 'Check more', none: 'No flags found', cant_tell: "Can't tell" } as const;
 
 function Row({ k, v }: { k: string; v: string }) {
   const { t } = useTheme();
@@ -32,6 +35,7 @@ function Row({ k, v }: { k: string; v: string }) {
 export default function Settings() {
   const { t, pref, setPref } = useTheme();
   const contacts = useStore((s) => s.contacts);
+  const recent = useStore((s) => s.recent);
   const [name, setName] = useState('');
   const [addr, setAddr] = useState('');
   const [err, setErr] = useState('');
@@ -41,7 +45,7 @@ export default function Settings() {
     const net = detectNetwork(a);
     if (!name.trim()) return setErr('Add a name.');
     if (!net || !isValid(a, net)) return setErr("That isn't a valid TRC-20 or EVM address.");
-    setState({ contacts: [...contacts, { name: name.trim(), address: a }] });
+    addContact({ name: name.trim(), address: a });
     setName('');
     setAddr('');
     setErr('');
@@ -81,7 +85,7 @@ export default function Settings() {
         <View style={{ gap: 10 }}>
           <Eyebrow>SAVED CONTACTS</Eyebrow>
           <Txt size={13} color={t.muted} style={{ lineHeight: 19 }}>
-            Kagua compares new addresses with these to catch look-alikes. Kept only in this session for now.
+            Kagua compares new addresses with these to catch look-alikes. Stored only on this phone.
           </Txt>
           {contacts.map((c, i) => (
             <Glass key={`${c.address}-${i}`} radius={16} style={{ padding: 14, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -97,7 +101,7 @@ export default function Settings() {
                 accessibilityRole="button"
                 accessibilityLabel={`Remove ${c.name}`}
                 hitSlop={8}
-                onPress={() => setState({ contacts: contacts.filter((_, j) => j !== i) })}
+                onPress={() => removeContact(c.address)}
                 style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
               >
                 <Icon icon={Delete02Icon} size={18} color={t.muted} />
@@ -123,6 +127,20 @@ export default function Settings() {
           <GhostButton label="Save contact" onPress={add} />
         </View>
 
+        {recent.length ? (
+          <View style={{ gap: 10 }}>
+            <Eyebrow>RECENT CHECKS</Eyebrow>
+            <Glass radius={18} style={{ padding: 16, gap: 10 }}>
+              {recent.slice(0, 8).map((r) => (
+                <Row key={r.id} k={r.label} v={LEVEL_TEXT[r.level]} />
+              ))}
+            </Glass>
+            <Txt size={12} color={t.muted}>
+              Chat text is never kept, only that a chat was checked.
+            </Txt>
+          </View>
+        ) : null}
+
         <View style={{ gap: 10 }}>
           <Eyebrow>ON THIS PHONE</Eyebrow>
           <Glass radius={18} style={{ padding: 16, gap: 10 }}>
@@ -138,8 +156,8 @@ export default function Settings() {
         <GhostButton
           label="Wipe data on this phone"
           onPress={() => {
-            resetState();
-            goHome();
+            setPref('system');
+            wipeAll().then(goHome);
           }}
         />
       </ScrollView>

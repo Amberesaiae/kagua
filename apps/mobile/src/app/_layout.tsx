@@ -3,9 +3,14 @@ import { GeistMono_400Regular, GeistMono_500Medium, GeistMono_600SemiBold } from
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ThemeProvider, useTheme } from '../theme/ThemeContext';
+import { bindRepo, hydrate, saveTheme } from '../state/actions';
+import { repo } from '../state/db';
+import { ThemeProvider, useTheme, type ThemePref } from '../theme/ThemeContext';
+
+bindRepo(repo);
 
 function Shell() {
   const { t } = useTheme();
@@ -29,10 +34,14 @@ export default function RootLayout() {
     GeistMono_500Medium,
     GeistMono_600SemiBold,
   });
-  if (!loaded) return <View style={{ flex: 1, backgroundColor: '#050605' }} />;
+  const [theme, setTheme] = useState<ThemePref | null>(null);
+  useEffect(() => {
+    hydrate().then(setTheme);
+  }, []);
+  if (!loaded || !theme) return <View style={{ flex: 1, backgroundColor: '#050605' }} />;
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
+      <ThemeProvider initial={theme} onChange={saveTheme}>
         <Shell />
       </ThemeProvider>
     </SafeAreaProvider>

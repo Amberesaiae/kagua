@@ -25,10 +25,11 @@
 ### B. App (apps/mobile, Expo)
 - [x] Scaffold, theme tokens (dark + light, toggle), fonts, Hugeicons (Expo SDK 54, Expo Router, `apps/mobile`)
 - [x] Screens: Check, Checking, Stop, Check more, No flags found, Can't tell (+ Paste chat, Settings with session contacts)
-- [ ] Contacts + recent checks + receipt ledger in expo-sqlite
+- [x] Contacts + recent checks + theme in expo-sqlite (localStorage on the web build; chat text is never stored)
+- [ ] Receipt ledger in expo-sqlite (after A: receipt reuse)
 - [ ] Share target / paste intake, QR scan
 - [ ] First-run model download screen (states the only network use)
-- [ ] Settings: theme, wipe data
+- [x] Settings: theme, wipe data, contacts, recent checks, list provenance
 ### C. QVAC (verify against docs.qvac.tether.io first)
 - [x] `ModelProvider` interface + mock provider + tests (`packages/core/src/provider.ts`; tags must quote the chat verbatim or are dropped)
 - [ ] OCR adapter, one small LLM tagger adapter (schema-forced JSON tags with quoted spans)
@@ -40,5 +41,6 @@
 - [ ] Submission checklist matches DoraHacks requirements
 
 ## Log
+- 2026-10-29 10:05 UTC: local storage behind a `Repo` interface (SQLite native, localStorage web, memory in tests); settings shows recent checks; Android JS bundle exports cleanly. 39 tests pass. (cloud run)
 - 2026-10-29 09:40 UTC: ModelProvider + mock in core; Expo app shell with all four result screens, Checking with measured step timings, chat paste, settings. Web build checked in Playwright, dark and light: all flows render and the page made 0 requests to other hosts. 36 tests pass. (cloud run)
 - 2026-10-29: core package, frozen-list script and list, design canvases, PRD committed. (manual session)

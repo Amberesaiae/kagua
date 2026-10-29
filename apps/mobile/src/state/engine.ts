@@ -2,6 +2,7 @@ import { createMockProvider, type FrozenList, type ModelProvider } from '@kagua/
 import frozenJson from '@kagua/core/data/frozen.json';
 import { presentAddress, presentCantTell, presentChat } from '../logic/present';
 import { timedAddressCheck, timedChatCheck } from '../logic/steps';
+import { recordCheck } from './actions';
 import { getState, setState, type Job } from './store';
 
 export const frozen = frozenJson as FrozenList;
@@ -19,13 +20,19 @@ export async function runJob(job: Job): Promise<void> {
       return;
     }
     const { result, steps } = timedAddressCheck(job.address, { picked: job.picked, frozen, contacts });
-    setState({ view: presentAddress(result), steps, modelUsed: false });
+    const view = presentAddress(result);
+    setState({ view, steps, modelUsed: false });
+    recordCheck(job, view);
     return;
   }
   const run = await timedChatCheck(job.text, { picked: 'tron', frozen, contacts }, provider);
   if (!run.verdict) {
-    setState({ view: presentCantTell('There was no text to read. Paste the chat, or type what it says.'), steps: run.steps, modelUsed: false });
+    const view = presentCantTell('There was no text to read. Paste the chat, or type what it says.');
+    setState({ view, steps: run.steps, modelUsed: false });
+    recordCheck(job, view);
     return;
   }
-  setState({ view: presentChat(run.verdict), steps: run.steps, modelUsed: run.modelUsed });
+  const view = presentChat(run.verdict);
+  setState({ view, steps: run.steps, modelUsed: run.modelUsed });
+  recordCheck(job, view);
 }

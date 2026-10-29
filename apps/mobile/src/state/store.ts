@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react';
 import type { Contact, Network } from '@kagua/core';
 import type { ResultView } from '../logic/present';
 import type { StepTiming } from '../logic/steps';
+import type { RecentCheck } from './repo';
 
 export type Job = { kind: 'address'; address: string; picked: Network } | { kind: 'chat'; text: string };
 
@@ -13,9 +14,10 @@ export interface State {
   steps: StepTiming[];
   modelUsed: boolean;
   contacts: Contact[];
+  recent: RecentCheck[];
 }
 
-const initial: State = { draftAddress: '', picked: 'tron', job: null, view: null, steps: [], modelUsed: false, contacts: [] };
+const initial: State = { draftAddress: '', picked: 'tron', job: null, view: null, steps: [], modelUsed: false, contacts: [], recent: [] };
 
 let state: State = initial;
 const listeners = new Set<() => void>();
