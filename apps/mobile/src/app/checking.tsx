@@ -10,6 +10,7 @@ import { OfflinePill, Screen, Txt } from '../ui/kit';
 
 const ADDRESS_STEPS = ['Checksum', 'Network', 'Frozen list', 'Look-alike'];
 const CHAT_STEPS = ['Rules', 'Addresses', 'Model tags', 'Decide'];
+const SCREENSHOT_STEPS = ['Read image', ...CHAT_STEPS];
 // The checks take milliseconds; each step stays on screen this long so it can be read.
 const STEP_MS = 280;
 
@@ -21,7 +22,7 @@ export default function Checking() {
   const measured = useStore((s) => s.steps);
   const [shown, setShown] = useState(0);
   const [finished, setFinished] = useState(false);
-  const names = job?.kind === 'chat' ? CHAT_STEPS : ADDRESS_STEPS;
+  const names = job?.kind === 'chat' ? CHAT_STEPS : job?.kind === 'screenshot' ? SCREENSHOT_STEPS : ADDRESS_STEPS;
 
   useEffect(() => {
     if (!job) {

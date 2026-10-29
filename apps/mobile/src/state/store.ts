@@ -4,7 +4,10 @@ import type { ResultView } from '../logic/present';
 import type { StepTiming } from '../logic/steps';
 import type { RecentCheck } from './repo';
 
-export type Job = { kind: 'address'; address: string; picked: Network } | { kind: 'chat'; text: string };
+export type Job = { kind: 'address'; address: string; picked: Network } | { kind: 'chat'; text: string } | { kind: 'screenshot'; uri: string };
+
+/** Who tagged the chat: the phone model, the web demo mock, or nobody (code rules only). */
+export type Tagger = 'qvac' | 'mock' | 'none';
 
 export interface State {
   draftAddress: string;
@@ -12,12 +15,13 @@ export interface State {
   job: Job | null;
   view: ResultView | null;
   steps: StepTiming[];
-  modelUsed: boolean;
+  tagger: Tagger;
+  modelsReady: boolean;
   contacts: Contact[];
   recent: RecentCheck[];
 }
 
-const initial: State = { draftAddress: '', picked: 'tron', job: null, view: null, steps: [], modelUsed: false, contacts: [], recent: [] };
+const initial: State = { draftAddress: '', picked: 'tron', job: null, view: null, steps: [], tagger: 'none', modelsReady: false, contacts: [], recent: [] };
 
 let state: State = initial;
 const listeners = new Set<() => void>();

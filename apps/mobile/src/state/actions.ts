@@ -16,7 +16,7 @@ const quiet = (p: Promise<unknown>) => p.catch(() => {});
 export async function hydrate(): Promise<ThemePref> {
   try {
     const s = await repo.load();
-    setState({ contacts: s.contacts, recent: s.recent });
+    setState({ contacts: s.contacts, recent: s.recent, modelsReady: s.modelsReady });
     return s.theme;
   } catch {
     return 'system';
@@ -33,6 +33,11 @@ export function removeContact(address: string): void {
   quiet(repo.removeContact(address));
 }
 
+export function markModelsReady(v: boolean): void {
+  setState({ modelsReady: v });
+  quiet(repo.setModelsReady(v));
+}
+
 export function saveTheme(t: ThemePref): void {
   quiet(repo.setTheme(t));
 }
@@ -40,13 +45,13 @@ export function saveTheme(t: ThemePref): void {
 const short = (a: string) => (a.length > 16 ? `${a.slice(0, 6)}…${a.slice(-6)}` : a);
 
 /** Remember a finished check. For chats only the level is kept, never the text. */
-export function recordCheck(job: { kind: 'address'; address: string } | { kind: 'chat' }, view: ResultView, at = new Date()): RecentCheck {
+export function recordCheck(job: { kind: 'address'; address: string } | { kind: 'chat' | 'screenshot' }, view: ResultView, at = new Date()): RecentCheck {
   const level = view.screen === 'no_flags' ? 'none' : view.screen;
   const r: RecentCheck = {
     id: `${at.getTime()}-${Math.random().toString(36).slice(2, 8)}`,
     at: at.toISOString(),
     kind: job.kind,
-    label: job.kind === 'address' ? short(job.address.trim()) : 'Chat',
+    label: job.kind === 'address' ? short(job.address.trim()) : job.kind === 'chat' ? 'Chat' : 'Screenshot',
     level,
   };
   setState({ recent: pushRecent(getState().recent, r) });
@@ -55,6 +60,6 @@ export function recordCheck(job: { kind: 'address'; address: string } | { kind: 
 }
 
 export async function wipeAll(): Promise<void> {
-  resetState();
+  resetState({ modelsReady: getState().modelsReady });
   await quiet(repo.wipe());
 }

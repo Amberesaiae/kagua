@@ -1,8 +1,10 @@
 import { Clipboard as ClipboardIcon, Image01Icon, Moon02Icon, QrCodeIcon, Settings02Icon, Sun03Icon } from '@hugeicons/core-free-icons';
 import * as Clipboard from 'expo-clipboard';
+import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import type { Network } from '@kagua/core';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { modelProvider } from '../model/provider';
 import { frozen, frozenCount } from '../state/engine';
 import { setState, useStore } from '../state/store';
 import { useTheme } from '../theme/ThemeContext';
@@ -57,9 +59,21 @@ export default function Check() {
   const { t, toggle } = useTheme();
   const address = useStore((s) => s.draftAddress);
   const picked = useStore((s) => s.picked);
+  const modelsReady = useStore((s) => s.modelsReady);
 
   const run = () => {
     setState({ job: { kind: 'address', address, picked }, view: null });
+    router.push('/checking');
+  };
+
+  const screenshot = async () => {
+    if (!modelsReady) {
+      router.push('/setup');
+      return;
+    }
+    const picked = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
+    if (picked.canceled || !picked.assets[0]) return;
+    setState({ job: { kind: 'screenshot', uri: picked.assets[0].uri }, view: null });
     router.push('/checking');
   };
 
@@ -141,7 +155,12 @@ export default function Check() {
 
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <Tile label="Paste chat" icon={ClipboardIcon} onPress={() => router.push('/chat')} />
-          <Tile label="Screenshot" icon={Image01Icon} note="Needs the phone model" />
+          <Tile
+            label="Screenshot"
+            icon={Image01Icon}
+            onPress={modelProvider ? screenshot : undefined}
+            note={!modelProvider ? 'On the phone' : modelsReady ? undefined : 'Set up first'}
+          />
           <Tile label="Scan QR" icon={QrCodeIcon} onPress={Platform.OS === 'web' ? undefined : () => router.push('/scan')} note={Platform.OS === 'web' ? 'On the phone' : undefined} />
         </View>
 

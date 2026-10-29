@@ -14,11 +14,11 @@ export interface QvacProgress {
 
 export interface QvacSdk {
   loadModel(options: { modelSrc: unknown; modelConfig?: Record<string, unknown>; onProgress?: (p: QvacProgress) => void }): Promise<string>;
-  ocr(params: { modelId: string; image: string | Uint8Array; options?: { paragraph?: boolean } }): { blocks: Promise<{ text: string; confidence?: number }[]> };
+  ocr(params: { modelId: string; image: string; options?: { paragraph?: boolean } }): { blocks: Promise<{ text: string; confidence?: number }[]> };
   completion(params: {
     modelId: string;
     history: { role: 'system' | 'user' | 'assistant'; content: string }[];
-    stream?: boolean;
+    stream: boolean;
     responseFormat?: { type: 'json_schema'; json_schema: { name: string; schema: Record<string, unknown> } };
   }): { final: Promise<{ contentText: string }> };
 }
@@ -99,9 +99,10 @@ export function createQvacProvider(sdk: QvacSdk, models: QvacModels): Preparable
     isReady: () => !!ocrId && !!taggerId,
     async ocr(image: ImageInput) {
       if (!ocrId) throw new Error('OCR model not loaded');
-      const input = image.bytes ?? image.uri;
-      if (!input) return { text: '' };
-      const blocks = await sdk.ocr({ modelId: ocrId, image: input, options: { paragraph: false } }).blocks;
+      // The SDK reads a file path on the phone.
+      if (!image.uri) return { text: '' };
+      const path = image.uri.replace(/^file:\/\//, '');
+      const blocks = await sdk.ocr({ modelId: ocrId, image: path, options: { paragraph: false } }).blocks;
       return { text: blocks.map((b) => b.text).join('\n') };
     },
     async tagChat(text: string) {

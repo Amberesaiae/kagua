@@ -5,7 +5,7 @@ import type { ThemePref } from '../theme/ThemeContext';
 export interface RecentCheck {
   id: string;
   at: string;
-  kind: 'address' | 'chat';
+  kind: 'address' | 'chat' | 'screenshot';
   label: string;
   level: Level | 'cant_tell';
 }
@@ -14,6 +14,8 @@ export interface Snapshot {
   contacts: Contact[];
   recent: RecentCheck[];
   theme: ThemePref;
+  /** The one-time model download finished on this phone. */
+  modelsReady: boolean;
 }
 
 /** Local storage on this phone. SQLite on native, localStorage on the web build. */
@@ -23,11 +25,12 @@ export interface Repo {
   removeContact(address: string): Promise<void>;
   addRecent(r: RecentCheck): Promise<void>;
   setTheme(t: ThemePref): Promise<void>;
+  setModelsReady(v: boolean): Promise<void>;
   wipe(): Promise<void>;
 }
 
 export const RECENT_LIMIT = 20;
-export const EMPTY: Snapshot = { contacts: [], recent: [], theme: 'system' };
+export const EMPTY: Snapshot = { contacts: [], recent: [], theme: 'system', modelsReady: false };
 
 /** Newest first, capped. Shared by every Repo so they behave the same. */
 export function pushRecent(list: RecentCheck[], r: RecentCheck): RecentCheck[] {
@@ -35,10 +38,10 @@ export function pushRecent(list: RecentCheck[], r: RecentCheck): RecentCheck[] {
 }
 
 export function memoryRepo(seed: Snapshot = EMPTY): Repo {
-  let snap: Snapshot = { contacts: [...seed.contacts], recent: [...seed.recent], theme: seed.theme };
+  let snap: Snapshot = { ...seed, contacts: [...seed.contacts], recent: [...seed.recent] };
   return {
     async load() {
-      return { contacts: [...snap.contacts], recent: [...snap.recent], theme: snap.theme };
+      return { ...snap, contacts: [...snap.contacts], recent: [...snap.recent] };
     },
     async addContact(c) {
       snap.contacts = [...snap.contacts.filter((x) => x.address !== c.address), c];
@@ -52,8 +55,12 @@ export function memoryRepo(seed: Snapshot = EMPTY): Repo {
     async setTheme(t) {
       snap.theme = t;
     },
+    async setModelsReady(v) {
+      snap.modelsReady = v;
+    },
     async wipe() {
-      snap = { contacts: [], recent: [], theme: 'system' };
+      // Wipe clears what the user stored; downloaded models stay so checks keep working.
+      snap = { ...EMPTY, modelsReady: snap.modelsReady };
     },
   };
 }

@@ -26,7 +26,8 @@ export const repo: Repo = {
     const contacts = await d.getAllAsync<Contact>('SELECT name, address FROM contacts ORDER BY added_at');
     const recent = await d.getAllAsync<RecentCheck>('SELECT id, at, kind, label, level FROM recent ORDER BY at DESC LIMIT ?', [RECENT_LIMIT]);
     const theme = await d.getFirstAsync<{ value: string }>("SELECT value FROM settings WHERE key = 'theme'");
-    return { ...EMPTY, contacts, recent, theme: (theme?.value as ThemePref) ?? 'system' };
+    const models = await d.getFirstAsync<{ value: string }>("SELECT value FROM settings WHERE key = 'models_ready'");
+    return { ...EMPTY, contacts, recent, theme: (theme?.value as ThemePref) ?? 'system', modelsReady: models?.value === '1' };
   },
   async addContact(c) {
     const d = await open();
@@ -45,8 +46,13 @@ export const repo: Repo = {
     const d = await open();
     await d.runAsync("INSERT OR REPLACE INTO settings (key, value) VALUES ('theme', ?)", [t]);
   },
+  async setModelsReady(v) {
+    const d = await open();
+    await d.runAsync("INSERT OR REPLACE INTO settings (key, value) VALUES ('models_ready', ?)", [v ? '1' : '0']);
+  },
   async wipe() {
     const d = await open();
-    await d.execAsync('DELETE FROM contacts; DELETE FROM recent; DELETE FROM settings;');
+    // Downloaded models stay so checks keep working; everything the user stored goes.
+    await d.execAsync("DELETE FROM contacts; DELETE FROM recent; DELETE FROM settings WHERE key <> 'models_ready';");
   },
 };

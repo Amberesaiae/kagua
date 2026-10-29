@@ -39,6 +39,9 @@ export const repo: Repo = {
   async setTheme(t) {
     write({ ...read(), theme: t });
   },
+  async setModelsReady(v) {
+    write({ ...read(), modelsReady: v });
+  },
   async wipe() {
     try {
       globalThis.localStorage?.removeItem(KEY);

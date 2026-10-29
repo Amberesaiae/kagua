@@ -17,6 +17,8 @@ const BREAK_ALL = Platform.OS === 'web' ? ({ wordBreak: 'break-all' } as object)
 
 function Quote({ e }: { e: Evidence }) {
   const { t } = useTheme();
+  const tagger = useStore((s) => s.tagger);
+  const modelNote = tagger === 'mock' ? ' (demo tag, web build)' : ' (model tag)';
   const ink = t.warnInk;
   return (
     <View style={{ gap: 4 }}>
@@ -38,7 +40,7 @@ function Quote({ e }: { e: Evidence }) {
       )}
       <Txt size={13} color={t.muted}>
         {e.text}
-        {e.source === 'model' ? ' (model tag)' : ''}
+        {e.source === 'model' ? modelNote : ''}
       </Txt>
     </View>
   );

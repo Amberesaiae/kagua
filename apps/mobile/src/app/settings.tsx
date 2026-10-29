@@ -3,7 +3,9 @@ import { detectNetwork, isValid } from '@kagua/core';
 import { goBack, goHome } from '../ui/nav';
 import { useState } from 'react';
 import { Pressable, ScrollView, TextInput, View } from 'react-native';
-import { frozen, frozenCount, provider } from '../state/engine';
+import { router } from 'expo-router';
+import { modelProvider } from '../model/provider';
+import { frozen, frozenCount } from '../state/engine';
 import { addContact, removeContact, wipeAll } from '../state/actions';
 import { useStore } from '../state/store';
 import { useTheme, type ThemePref } from '../theme/ThemeContext';
@@ -36,6 +38,7 @@ export default function Settings() {
   const { t, pref, setPref } = useTheme();
   const contacts = useStore((s) => s.contacts);
   const recent = useStore((s) => s.recent);
+  const modelsReady = useStore((s) => s.modelsReady);
   const [name, setName] = useState('');
   const [addr, setAddr] = useState('');
   const [err, setErr] = useState('');
@@ -146,15 +149,17 @@ export default function Settings() {
           <Glass radius={18} style={{ padding: 16, gap: 10 }}>
             <Row k="Frozen addresses" v={frozenCount.toLocaleString('en-US')} />
             <Row k="List date" v={frozen.date ?? 'none'} />
-            <Row k="Chat tagger" v={provider.id === 'mock' ? 'Mock (no phone model yet)' : provider.id} />
+            <Row k="Chat tagger" v={!modelProvider ? 'Demo mock (web build)' : modelsReady ? 'Qwen3 0.6B on this phone' : 'Not downloaded'} />
+            <Row k="Screenshot reader" v={!modelProvider ? 'Phone only' : modelsReady ? 'QVAC OCR on this phone' : 'Not downloaded'} />
           </Glass>
+          {modelProvider && !modelsReady ? <GhostButton label="Set up on-phone models" onPress={() => router.push('/setup')} /> : null}
           <Txt size={12} color={t.muted} style={{ lineHeight: 18 }}>
             Frozen list from the USDT Blacklist Archive (KYT Group / cryptoalert.report, CC-BY-4.0) and Tron USDT contract events. Being absent from it proves nothing.
           </Txt>
         </View>
 
         <GhostButton
-          label="Wipe data on this phone"
+          label="Wipe contacts, recent checks and settings"
           onPress={() => {
             setPref('system');
             wipeAll().then(goHome);

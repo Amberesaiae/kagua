@@ -38,7 +38,8 @@
           "cameraPermission": "Kagua uses the camera to read wallet QR codes. Images stay on this phone.",
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "@qvac/sdk/expo-plugin"
     ],
     "scheme": "kagua",
     "experiments": {

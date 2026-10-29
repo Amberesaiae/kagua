@@ -54,9 +54,11 @@ describe('QVAC adapter (fake SDK)', () => {
     expect(r.verdict?.level).toBe('stop');
   });
   it('OCR joins blocks; unloaded models throw so the app shows Can\'t tell', async () => {
-    const p = createQvacProvider(fakeSdk('{"tags":[]}'), MODELS);
+    const calls: unknown[] = [];
+    const p = createQvacProvider(fakeSdk('{"tags":[]}', calls), MODELS);
     await expect(p.ocr({ uri: 'file:///a.png' })).rejects.toThrow();
     await p.prepare();
     expect((await p.ocr({ uri: 'file:///a.png' })).text).toBe('Tuma OTP\nharaka');
+    expect(calls.at(-1)).toEqual(['ocr', 'm0', '/a.png']);
   });
 });

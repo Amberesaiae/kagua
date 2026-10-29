@@ -38,6 +38,18 @@ describe('actions', () => {
     await repo.setTheme('light');
     await wipeAll();
     expect(getState().contacts).toEqual([]);
-    expect(await repo.load()).toEqual({ contacts: [], recent: [], theme: 'system' });
+    expect(await repo.load()).toEqual({ contacts: [], recent: [], theme: 'system', modelsReady: false });
+  });
+});
+
+describe('models flag', () => {
+  it('survives a wipe so checks keep working', async () => {
+    const { markModelsReady } = await import('./actions');
+    markModelsReady(true);
+    addContact(W);
+    await wipeAll();
+    expect(getState().modelsReady).toBe(true);
+    expect((await repo.load()).modelsReady).toBe(true);
+    expect((await repo.load()).contacts).toEqual([]);
   });
 });

@@ -1,8 +1,18 @@
 # Progress
 
 ## Handover (update before stopping)
-**State at 29 Oct 2026, 09:00 UTC:** `packages/core` is built and tested (validators, address check, chat check, risk code, frozen-list build script and a real frozen list). Design mockups are in `docs/design/canvases`. Nothing else is built: no Expo app, no QVAC integration, no offline-proof script, no README.
-**Next step:** Workstream B, scaffold `apps/mobile` (Expo + TypeScript + Expo Router) with the four screens from DESIGN-SYSTEM.md on the core package using a mock `ModelProvider`.
+**State at 29 Oct 2026, 11:10 UTC:** core + Expo app built on `cloud/build`. Verified only in the cloud: 49 unit tests, typecheck (incl. against real `@qvac/sdk` 0.22.0 types), web build flows in headless Chromium (dark + light, 0 requests to other hosts), Android JS bundle compiles. **Nothing has run on a phone yet**: no native build, no model download, no on-device OCR/tagging, no offline test. The QVAC adapter was written from the npm package's type declarations and shipped examples because `docs.qvac.tether.io` is blocked here; it has not been checked against the docs site.
+**Next step:** A. Receipt reuse (SHA-256 + perceptual hash + ledger, pure TS, tested), then D: `scripts/offline-proof.ts` and the README draft. Re-check the QVAC adapter against docs.qvac.tether.io if the network allows it.
+
+### Owner phone test list (Android 12+ arm64, physical phone)
+1. `cd apps/mobile && npx expo prebuild -p android && npx expo run:android` builds and launches (QVAC plugin bundles its worker; minSdk 29, arm64 only).
+2. Settings > Set up on-phone models: download completes; note the real time and total MB.
+3. Turn on airplane mode, force-close, reopen. Paste a chat with "haraka" / "WhatsApp": Check more with model tags. Note time per check and RAM.
+4. Screenshot tile on a chat screenshot (test text only): text is read; result appears. Note OCR time.
+5. While in airplane mode, confirm nothing fails for lack of network (cached model load must not need the internet).
+6. Scan QR of a test address (`tron:` and plain): fills address + network. Check it works in airplane mode.
+7. Contacts and recent checks survive an app restart; Wipe clears them.
+8. Stop screen vibrates; TalkBack reads addresses in groups of four.
 
 ## Decisions for the owner
 - [ ] Frozen list cross-check: 1,809 Tron addresses are frozen on chain but not marked banned in the 7 Sep archive. Probably newer freezes; confirm or accept the chain as the source of truth (current choice).
@@ -29,12 +39,12 @@
 - [ ] Receipt ledger in expo-sqlite (after A: receipt reuse)
 - [x] Paste intake (address + chat) and QR scan (`parseQr` in core: bare, `tron:`, EIP-681 incl. token transfer recipient; expo-camera screen, phone only)
 - [ ] Android share target (needs a native plugin and the phone to test)
-- [ ] First-run model download screen (states the only network use)
+- [x] First-run model download screen (states the only network use), untested on a phone
 - [x] Settings: theme, wipe data, contacts, recent checks, list provenance
 ### C. QVAC (verify against docs.qvac.tether.io first)
 - [x] `ModelProvider` interface + mock provider + tests (`packages/core/src/provider.ts`; tags must quote the chat verbatim or are dropped)
-- [ ] OCR adapter, one small LLM tagger adapter (schema-forced JSON tags with quoted spans)
-- [ ] List exactly what the owner must test on the phone
+- [x] OCR adapter, one small LLM tagger adapter (schema-forced JSON tags with quoted spans), tested on a fake SDK only; wired into the app (`apps/mobile/src/model/provider.ts`)
+- [x] List exactly what the owner must test on the phone (handover above)
 ### D. Offline proof + submission
 - [ ] `scripts/offline-proof.ts`: runs address, chat, receipt checks end to end, logs every outbound connection attempt, expects zero
 - [ ] README: setup, dependencies, what was built during the event, QVAC SDK versions/models/files, device/OS, memory, licences (CC-BY credit), network-only features, honest limits, measured numbers only
@@ -42,6 +52,7 @@
 - [ ] Submission checklist matches DoraHacks requirements
 
 ## Log
+- 2026-10-29 11:10 UTC: QVAC wired: `@qvac/sdk` 0.22.0 + Expo plugin, `qvac.config.js` (LLM + OCR plugins only), setup screen, screenshot flow; web keeps a labelled demo tagger. Not run on a phone. 49 tests pass. (cloud run)
 - 2026-10-29 10:20 UTC: QR scan: `parseQr` in core (5 tests), Scan screen on expo-camera filling address + network. 44 tests pass. (cloud run)
 - 2026-10-29 10:05 UTC: local storage behind a `Repo` interface (SQLite native, localStorage web, memory in tests); settings shows recent checks; Android JS bundle exports cleanly. 39 tests pass. (cloud run)
 - 2026-10-29 09:40 UTC: ModelProvider + mock in core; Expo app shell with all four result screens, Checking with measured step timings, chat paste, settings. Web build checked in Playwright, dark and light: all flows render and the page made 0 requests to other hosts. 36 tests pass. (cloud run)

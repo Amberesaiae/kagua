@@ -88,3 +88,17 @@ export async function timedChatCheck(text: string, opts: CheckOptions, provider:
     ],
   };
 }
+
+/** Screenshot: OCR first (timed), then the same chat check on the text read. */
+export async function timedScreenshotCheck(uri: string, opts: CheckOptions, ocrProvider: ModelProvider, tagProvider: ModelProvider | null): Promise<TimedChatCheck & { text: string }> {
+  const t0 = now();
+  let text = '';
+  try {
+    text = (await ocrProvider.ocr({ uri })).text ?? '';
+  } catch {
+    // Unreadable: the app says Can't tell.
+  }
+  const read: StepTiming = { name: 'Read image', ms: now() - t0 };
+  const chat = await timedChatCheck(text, opts, tagProvider);
+  return { ...chat, text, steps: [read, ...chat.steps] };
+}
