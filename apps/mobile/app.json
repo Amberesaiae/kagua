@@ -31,7 +31,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Kagua uses the camera to read wallet QR codes. Images stay on this phone.",
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "scheme": "kagua",
     "experiments": {

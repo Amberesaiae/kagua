@@ -2,7 +2,7 @@ import { Clipboard as ClipboardIcon, Image01Icon, Moon02Icon, QrCodeIcon, Settin
 import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import type { Network } from '@kagua/core';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { frozen, frozenCount } from '../state/engine';
 import { setState, useStore } from '../state/store';
 import { useTheme } from '../theme/ThemeContext';
@@ -142,7 +142,7 @@ export default function Check() {
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <Tile label="Paste chat" icon={ClipboardIcon} onPress={() => router.push('/chat')} />
           <Tile label="Screenshot" icon={Image01Icon} note="Needs the phone model" />
-          <Tile label="Scan QR" icon={QrCodeIcon} note="Not built yet" />
+          <Tile label="Scan QR" icon={QrCodeIcon} onPress={Platform.OS === 'web' ? undefined : () => router.push('/scan')} note={Platform.OS === 'web' ? 'On the phone' : undefined} />
         </View>
 
         <View style={[styles.footer, { borderTopColor: t.track }]}>

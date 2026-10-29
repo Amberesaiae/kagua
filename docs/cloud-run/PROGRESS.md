@@ -27,7 +27,8 @@
 - [x] Screens: Check, Checking, Stop, Check more, No flags found, Can't tell (+ Paste chat, Settings with session contacts)
 - [x] Contacts + recent checks + theme in expo-sqlite (localStorage on the web build; chat text is never stored)
 - [ ] Receipt ledger in expo-sqlite (after A: receipt reuse)
-- [ ] Share target / paste intake, QR scan
+- [x] Paste intake (address + chat) and QR scan (`parseQr` in core: bare, `tron:`, EIP-681 incl. token transfer recipient; expo-camera screen, phone only)
+- [ ] Android share target (needs a native plugin and the phone to test)
 - [ ] First-run model download screen (states the only network use)
 - [x] Settings: theme, wipe data, contacts, recent checks, list provenance
 ### C. QVAC (verify against docs.qvac.tether.io first)
@@ -41,6 +42,7 @@
 - [ ] Submission checklist matches DoraHacks requirements
 
 ## Log
+- 2026-10-29 10:20 UTC: QR scan: `parseQr` in core (5 tests), Scan screen on expo-camera filling address + network. 44 tests pass. (cloud run)
 - 2026-10-29 10:05 UTC: local storage behind a `Repo` interface (SQLite native, localStorage web, memory in tests); settings shows recent checks; Android JS bundle exports cleanly. 39 tests pass. (cloud run)
 - 2026-10-29 09:40 UTC: ModelProvider + mock in core; Expo app shell with all four result screens, Checking with measured step timings, chat paste, settings. Web build checked in Playwright, dark and light: all flows render and the page made 0 requests to other hosts. 36 tests pass. (cloud run)
 - 2026-10-29: core package, frozen-list script and list, design canvases, PRD committed. (manual session)
