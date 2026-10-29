@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kagua · Check</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: {{t.page}}; color: {{t.text}}; font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column; padding: 28px 22px 26px; gap: 30px">
+  <header style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px">
+    <div style="display: flex; align-items: center; gap: 9px">
+      <span style="width: 30px; height: 30px; border-radius: 999px; background: conic-gradient(from 210deg, #C6F432 0 72%, {{t.track}} 72% 100%); display: flex; align-items: center; justify-content: center">
+        <span style="width: 20px; height: 20px; border-radius: 999px; background: {{t.bg}}"></span></span>
+      <span style="font-size: 20px; font-weight: 600; letter-spacing: -0.03em">kagua</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px">
+      <div style="display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 999px; background: {{t.glass}}; box-shadow: {{t.ring}}; font-size: 12px; color: {{t.soft}}">
+        <span style="width: 6px; height: 6px; border-radius: 999px; background: #8BC000; box-shadow: 0 0 8px #C6F432"></span>
+        Offline
+      </div>
+      <button onClick="{{toggle}}" aria-label="{{toggleLabel}}" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: {{t.glass}}; box-shadow: {{t.ring}}; color: {{t.text}}; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <sc-if value="{{isLight}}" hint-placeholder-val="{{ false }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path></svg>
+        </sc-if>
+        <sc-if value="{{isDark}}" hint-placeholder-val="{{ true }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+        </sc-if>
+      </button>
+    </div>
+  </header>
+
+  <h1 style="margin: 12px 0 0; font-size: 44px; line-height: 1.02; font-weight: 600; letter-spacing: -0.045em">Check it<br>before you<br><span style="color: {{t.accentInk}}">release it.</span></h1>
+
+  <div style="border-radius: 28px; padding: 6px; background: {{t.glass}}; box-shadow: {{t.ringLift}}">
+    <div style="border-radius: 23px; padding: 18px 18px 14px; background: {{t.inner}}; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center">
+        <label for="addr" style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: {{t.muted}}">Send to</label>
+        <span style="font: 500 12px 'Geist Mono', monospace; color: {{t.accentInk}}">TRC-20</span>
+      </div>
+      <textarea id="addr" rows="2" style="resize: none; border: 0; outline: none; background: transparent; color: {{t.text}}; font: 500 19px/1.4 'Geist Mono', monospace; padding: 0; word-break: break-all">TQn9Y2Hp7vXa3RzN8dGqLtUe4mw5KcbLSE</textarea>
+    </div>
+    <a href="Scanning.dc.html" style="margin-top: 6px; height: 58px; border-radius: 22px; background: #C6F432; color: #050605; font: 600 17px Geist, sans-serif; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 10px 30px rgba(140,190,0,0.28)">Kagua</a>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+    <button style="height: 92px; border: 0; border-radius: 22px; background: {{t.glass}}; box-shadow: {{t.ring}}; color: {{t.text}}; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 16px; font: 500 14px Geist, sans-serif">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"></path></svg>Paste chat</button>
+    <button style="height: 92px; border: 0; border-radius: 22px; background: {{t.glass}}; box-shadow: {{t.ring}}; color: {{t.text}}; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 16px; font: 500 14px Geist, sans-serif">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-5-5L5 21"></path></svg>Screenshot</button>
+    <button style="height: 92px; border: 0; border-radius: 22px; background: {{t.glass}}; box-shadow: {{t.ring}}; color: {{t.text}}; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 16px; font: 500 14px Geist, sans-serif">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"></path></svg>Scan QR</button>
+  </div>
+
+  <div style="margin-top: auto; display: flex; justify-content: space-between; padding: 16px 4px 0; border-top: 1px solid {{t.track}}">
+    <div style="display: flex; flex-direction: column; gap: 3px">
+      <span style="font: 500 20px 'Geist Mono', monospace; letter-spacing: -0.02em">0 B</span>
+      <span style="font-size: 12px; color: {{t.muted}}">sent off this phone</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-end">
+      <span style="font: 500 20px 'Geist Mono', monospace; letter-spacing: -0.02em">[COUNT]</span>
+      <span style="font-size: 12px; color: {{t.muted}}">frozen addresses on device</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mode = (this.state && this.state.theme) || this.props.theme || 'dark';
+    const T = {
+      dark: { bg: '#050605', page: 'radial-gradient(120% 60% at 50% -10%, rgba(198,244,50,0.16) 0%, rgba(198,244,50,0.04) 40%, rgba(5,6,5,0) 70%), #050605', text: '#F4F7F1', soft: '#C9D0C6', muted: '#8F988C', track: 'rgba(255,255,255,0.1)', glass: 'rgba(255,255,255,0.04)', ring: 'inset 0 0 0 1px rgba(255,255,255,0.08)', ringLift: 'inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06), 0 30px 60px rgba(0,0,0,0.5)', inner: 'rgba(5,6,5,0.6)', accentInk: '#C6F432' },
+      light: { bg: '#F3F4EE', page: 'radial-gradient(120% 60% at 50% -10%, rgba(176,224,20,0.30) 0%, rgba(176,224,20,0.08) 40%, rgba(243,244,238,0) 70%), #F3F4EE', text: '#0B0D0C', soft: '#3A4137', muted: '#5B6358', track: 'rgba(11,13,12,0.1)', glass: 'rgba(255,255,255,0.7)', ring: 'inset 0 0 0 1px rgba(11,13,12,0.08)', ringLift: 'inset 0 0 0 1px rgba(11,13,12,0.06), 0 24px 50px rgba(40,50,10,0.12)', inner: '#FFFFFF', accentInk: '#4A6A00' }
+    };
+    const isLight = mode === 'light';
+    return {
+      t: T[mode] || T.dark,
+      isLight, isDark: !isLight,
+      toggleLabel: isLight ? 'Switch to dark theme' : 'Switch to light theme',
+      toggle: () => this.setState({ theme: isLight ? 'dark' : 'light' })
+    };
+  }
+}
+</script>
+</body>
+</html>

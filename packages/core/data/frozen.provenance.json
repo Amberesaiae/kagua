@@ -1,0 +1,28 @@
+{
+  "builtAt": "2026-10-29T08:47:26.632Z",
+  "sha256": "dcfd69155b6f030fddf640fb38c901cc770de2aa71f4fa3c12535729253dcf85",
+  "counts": {
+    "tron": 8089,
+    "evm": 1650
+  },
+  "sources": [
+    {
+      "name": "USDT Blacklist Archive (ETH + TRON)",
+      "url": "https://huggingface.co/datasets/cryptoalert/usdt-blacklist-archive",
+      "licence": "CC-BY-4.0",
+      "attribution": "KYT Group / cryptoalert.report",
+      "use": "Ethereum frozen addresses; Tron cross-check",
+      "rowsBanned": 7946
+    },
+    {
+      "name": "Tron USDT contract events via TronGrid",
+      "url": "https://api.trongrid.io/v1/contracts/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t/events",
+      "use": "Tron frozen addresses (net of AddedBlackList and RemovedBlackList)"
+    }
+  ],
+  "crossCheck": {
+    "tronOnlyInArchive": 16,
+    "tronOnlyOnChain": 1809
+  },
+  "notAnyList": "A frozen list only catches known freezes. Not being on it proves nothing."
+}

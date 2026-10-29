@@ -1,0 +1,6 @@
+{
+  "name": "kagua",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": { "test": "npm test -w @kagua/core" }
+}

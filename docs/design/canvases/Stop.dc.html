@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kagua · Stop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: {{t.bg}}; color: {{t.text}}; font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column">
+  <div style="position: relative; height: 470px; flex-shrink: 0; background: #C42F1F; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; padding: 42px 22px 0; box-sizing: border-box">
+    <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: repeating-linear-gradient(-45deg, #1A0705 0 12px, #C42F1F 12px 24px)" aria-hidden="true"></div>
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center">
+      <span style="font: 600 12px 'Geist Mono', monospace; letter-spacing: 0.12em; color: rgba(255,255,255,0.88)">KAGUA · HARD SIGNAL</span>
+      <button aria-label="Close" style="width: 44px; height: 44px; border-radius: 999px; border: 0; background: rgba(0,0,0,0.18); color: #FFFFFF; display: flex; align-items: center; justify-content: center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    </div>
+    <div style="margin-top: 26px; width: 150px; height: 150px; background: #FFFFFF; clip-path: polygon(29.3% 0, 70.7% 0, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0 70.7%, 0 29.3%); display: flex; align-items: center; justify-content: center">
+      <div style="width: 136px; height: 136px; background: #C42F1F; clip-path: polygon(29.3% 0, 70.7% 0, 100% 29.3%, 100% 70.7%, 70.7% 100%, 29.3% 100%, 0 70.7%, 0 29.3%); display: flex; align-items: center; justify-content: center">
+        <span style="font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: #FFFFFF">STOP</span>
+      </div>
+    </div>
+    <h1 style="margin: 26px 0 0; font-size: 40px; line-height: 1; font-weight: 700; letter-spacing: -0.045em; text-align: center">Don't send.</h1>
+    <p style="margin: 12px 0 0; font-size: 17px; line-height: 1.35; font-weight: 500; text-align: center; color: #FFFFFF; max-width: 300px">This copies Wanjiru's address. It isn't hers.</p>
+  </div>
+
+  <div style="flex: 1; padding: 22px 22px 26px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: grid; grid-template-columns: 64px minmax(0, 1fr); row-gap: 10px; column-gap: 10px; align-items: baseline">
+      <span style="font-size: 12px; color: {{t.muted}}">Saved</span>
+      <span style="font: 500 14px/1.45 'Geist Mono', monospace; word-break: break-all; color: {{t.soft}}">TQn9Y2<span style="color: {{t.faint}}">khEsLJW1ChVWFMSMeRDo</span>w5KcbLSE</span>
+      <span style="font-size: 12px; font-weight: 600; color: {{t.stopInk}}">Pasted</span>
+      <span style="font: 500 14px/1.45 'Geist Mono', monospace; word-break: break-all">TQn9Y2<span style="color: {{t.stopInk}}; background: {{t.stopBg}}; border-radius: 3px; padding: 0 2px">Hp7vXa3RzN8dGqLtUe4m</span>w5KcbLSE</span>
+    </div>
+    <a href="Main.dc.html" style="margin-top: auto; height: 58px; border-radius: 22px; background: #C6F432; color: #050605; font: 600 17px Geist, sans-serif; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5)">Use Wanjiru's real address</a>
+    <button disabled style="height: 52px; border-radius: 22px; border: 1px dashed {{t.track}}; background: transparent; color: {{t.muted}}; font: 500 14px Geist, sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+      Send anyway unlocks in <span style="font-family: 'Geist Mono', monospace">0:30</span></button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      dark: { bg: '#050605', text: '#F4F7F1', soft: '#C9D0C6', muted: '#8F988C', faint: '#5E665B', track: 'rgba(255,255,255,0.16)', stopInk: '#FF8A78', stopBg: 'rgba(255,94,72,0.18)' },
+      light: { bg: '#F3F4EE', text: '#0B0D0C', soft: '#3A4137', muted: '#5B6358', faint: '#9AA196', track: 'rgba(11,13,12,0.2)', stopInk: '#B42A1B', stopBg: 'rgba(196,47,31,0.12)' }
+    };
+    return { t: T[this.props.theme] || T.dark };
+  }
+}
+</script>
+</body>
+</html>
