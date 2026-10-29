@@ -1,4 +1,4 @@
-import { checkAddress, checkChat, detectNetwork, findAddresses, HARD_RULES, isLookAlike, isValid, normalize, sanitizeTags, type AddressResult, type CheckOptions, type ModelProvider, type ModelTag, type Verdict } from '@kagua/core';
+import { checkAddress, checkChat, detectNetwork, findAddresses, HARD_RULES, isLookAlike, isValid, MODEL_TAG_TIMEOUT_MS, normalize, readModelTags, SOFT_RULES, withTimeout, type AddressResult, type CheckOptions, type ModelProvider, type Verdict } from '@kagua/core';
 
 export interface StepTiming {
   name: string;
@@ -60,45 +60,45 @@ export interface TimedChatCheck {
  * Same split for a chat: the verdict comes from `checkChat` with sanitised model tags.
  * A model error leaves the code result standing.
  */
-export async function timedChatCheck(text: string, opts: CheckOptions, provider: ModelProvider | null): Promise<TimedChatCheck> {
+export async function timedChatCheck(text: string, opts: CheckOptions, provider: ModelProvider | null, timeoutMs = MODEL_TAG_TIMEOUT_MS): Promise<TimedChatCheck> {
   if (!text.trim()) return { verdict: null, modelUsed: false, steps: [] };
-  const [, rulesMs] = time(() => HARD_RULES.map((r) => r.re.test(text)));
-  const [, addrMs] = time(() => findAddresses(text).map((a) => checkAddress(a, { ...opts, picked: a.startsWith('0x') ? 'evm' : 'tron' })));
-  let tags: ModelTag[] = [];
+  const [, rulesMs] = time(() => {
+    for (const r of [...HARD_RULES, ...SOFT_RULES]) r.re.test(text);
+  });
+  const [, addrMs] = time(() => findAddresses(text).map((a) => checkAddress(a, { ...opts, picked: a.startsWith('0x') || a.startsWith('0X') ? 'evm' : 'tron' })));
+  // A code Stop is already decided. Do not wait on a model that may never answer.
+  const code = checkChat(text, opts, []);
   let modelUsed = false;
-  const t0 = now();
-  if (provider) {
-    try {
-      tags = sanitizeTags(text, await provider.tagChat(text));
-      modelUsed = true;
-    } catch {
-      // Code rules still decide.
-    }
+  let modelMs = 0;
+  let tags: { kind: 'pressure' | 'impersonation' | 'off_platform' | 'fake_support'; span: string }[] = [];
+  if (provider && code.level !== 'stop') {
+    const t0 = now();
+    const read = await readModelTags(text, provider, timeoutMs);
+    tags = read.tags;
+    modelUsed = read.modelUsed;
+    modelMs = now() - t0;
   }
-  const modelMs = now() - t0;
-  const [verdict, decideMs] = time(() => checkChat(text, opts, tags));
-  return {
-    verdict,
-    modelUsed,
-    steps: [
-      { name: 'Rules', ms: rulesMs },
-      { name: 'Addresses', ms: addrMs },
-      { name: 'Model tags', ms: modelMs },
-      { name: 'Decide', ms: decideMs },
-    ],
-  };
+  const [verdict, decideMs] = time(() => (code.level === 'stop' ? code : checkChat(text, opts, tags)));
+  const steps: StepTiming[] = [
+    { name: 'Rules', ms: rulesMs },
+    { name: 'Addresses', ms: addrMs },
+  ];
+  if (modelUsed) steps.push({ name: 'Model tags', ms: modelMs });
+  steps.push({ name: 'Decide', ms: decideMs });
+  return { verdict, modelUsed, steps };
 }
 
 /** Screenshot: OCR first (timed), then the same chat check on the text read. */
-export async function timedScreenshotCheck(uri: string, opts: CheckOptions, ocrProvider: ModelProvider, tagProvider: ModelProvider | null): Promise<TimedChatCheck & { text: string }> {
+export async function timedScreenshotCheck(uri: string, opts: CheckOptions, ocrProvider: ModelProvider, tagProvider: ModelProvider | null, timeoutMs = MODEL_TAG_TIMEOUT_MS): Promise<TimedChatCheck & { text: string }> {
   const t0 = now();
   let text = '';
   try {
-    text = (await ocrProvider.ocr({ uri })).text ?? '';
+    text = (await withTimeout(ocrProvider.ocr({ uri }), timeoutMs)).text ?? '';
   } catch {
-    // Unreadable: the app says Can't tell.
+    // Unreadable or stuck: the app says Can't tell.
   }
   const read: StepTiming = { name: 'Read image', ms: now() - t0 };
-  const chat = await timedChatCheck(text, opts, tagProvider);
+  if (!text.trim()) return { verdict: null, modelUsed: false, text: '', steps: [read] };
+  const chat = await timedChatCheck(text, opts, tagProvider, timeoutMs);
   return { ...chat, text, steps: [read, ...chat.steps] };
 }

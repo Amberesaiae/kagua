@@ -31,10 +31,11 @@ describe('runChatCheck', () => {
   it('empty text -> cant tell', async () => {
     expect((await runChatCheck('   ', opts, createMockProvider())).cantTell).toBe(true);
   });
-  it('mock tags raise to check_more with model source', async () => {
+  it('mock tags raise to check_more and code rules still stand', async () => {
     const r = await runChatCheck('Release urgently, chat on Telegram', opts, createMockProvider());
     expect(r.verdict?.level).toBe('check_more');
-    expect(r.verdict?.reasons.every((x) => x.source === 'model')).toBe(true);
+    expect(r.verdict?.reasons.some((x) => x.source === 'model')).toBe(true);
+    expect(r.verdict?.reasons.some((x) => x.source === 'code')).toBe(true);
     expect(r.modelUsed).toBe(true);
   });
   it('model failure keeps the code stop', async () => {
@@ -44,9 +45,10 @@ describe('runChatCheck', () => {
     expect(r.modelUsed).toBe(false);
   });
   it('a model claiming stop still yields check_more at most', async () => {
-    const liar: ModelProvider = { id: 'liar', ocr: async () => ({ text: '' }), tagChat: async () => [{ kind: 'pressure', span: 'ready', level: 'stop' }] as never };
-    const r = await runChatCheck('ready to trade', opts, liar);
+    const liar: ModelProvider = { id: 'liar', ocr: async () => ({ text: '' }), tagChat: async () => [{ kind: 'off_platform', span: 'WhatsApp', level: 'stop' }] as never };
+    const r = await runChatCheck('Move to WhatsApp when ready', opts, liar);
     expect(r.verdict?.level).toBe('check_more');
+    expect(r.verdict?.reasons.some((x) => x.source === 'model')).toBe(true);
   });
 });
 

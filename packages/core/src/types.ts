@@ -15,7 +15,9 @@ export interface Contact {
 }
 
 export interface FrozenList {
+  /** Older single date. Prefer `dates` so each network shows its own list. */
   date: string | null;
+  dates?: { tron?: string | null; evm?: string | null };
   tron: string[];
   evm: string[];
 }
@@ -26,7 +28,8 @@ export type AddressOutcome =
   | 'on_frozen_list'
   | 'look_alike'
   | 'saved_contact'
-  | 'not_on_list';
+  | 'not_on_list'
+  | 'unreadable';
 
 export interface AddressResult {
   address: string;

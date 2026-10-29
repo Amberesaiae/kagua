@@ -46,12 +46,13 @@ describe('QVAC adapter (fake SDK)', () => {
     expect(calls).toContainEqual(['completion', 'm1', 'json_schema', 2]);
     expect(JSON.stringify(TAG_SCHEMA)).not.toMatch(/level|stop/);
   });
-  it('bad JSON -> no tags, code rules still decide', async () => {
+  it('bad JSON is a model failure, code rules still decide', async () => {
     const p = createQvacProvider(fakeSdk('not json'), MODELS);
     await p.prepare();
-    expect(await p.tagChat('hi')).toEqual([]);
-    const r = await runChatCheck('Send your seed phrase', opts, p);
-    expect(r.verdict?.level).toBe('stop');
+    await expect(p.tagChat('hi')).rejects.toThrow();
+    const r = await runChatCheck('Hello, ready to trade', opts, p);
+    expect(r.verdict?.level).toBe('none');
+    expect(r.modelUsed).toBe(false);
   });
   it('OCR joins blocks; unloaded models throw so the app shows Can\'t tell', async () => {
     const calls: unknown[] = [];

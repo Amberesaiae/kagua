@@ -1,8 +1,9 @@
 import type { AddressResult, Contact, FrozenList, Network, Reason } from './types';
-import { detectNetwork, isValid, normalize } from './validate';
+import { cleanAddress, detectNetwork, isValid, normalize } from './validate';
 
-const PREFIX = 6;
-const SUFFIX = 6;
+// Wallets show about 4 or 5 characters at each end. Matching 4 also catches 5 and 6.
+const PREFIX = 4;
+const SUFFIX = 4;
 
 export const WORDING = {
   invalid: "This isn't a valid address. Check for a typo or a bad OCR read.",
@@ -12,15 +13,20 @@ export const WORDING = {
   not_on_list: 'Not on the frozen list as of the list date. This proves nothing about the address.',
 } as const;
 
+/** The date the list for this network was actually current. */
+export function networkListDate(frozen: FrozenList, net: Network): string | null {
+  return frozen.dates?.[net] || frozen.date;
+}
+
 function body(addr: string, net: Network): string {
   return net === 'evm' ? addr.slice(2).toLowerCase() : addr;
 }
 
 /** Same ends, different middle: the address-poisoning pattern. */
 export function isLookAlike(a: string, b: string, net: Network): boolean {
-  const x = body(a, net);
-  const y = body(b, net);
-  if (x === y || x.length !== y.length) return false;
+  const x = body(cleanAddress(a), net);
+  const y = body(cleanAddress(b), net);
+  if (!x || !y || x === y || x.length !== y.length) return false;
   return x.slice(0, PREFIX) === y.slice(0, PREFIX) && x.slice(-SUFFIX) === y.slice(-SUFFIX);
 }
 
@@ -31,16 +37,23 @@ export interface CheckOptions {
 }
 
 export function checkAddress(raw: string, opts: CheckOptions): AddressResult {
-  const address = raw.trim();
-  const { picked, frozen, contacts } = opts;
+  const address = cleanAddress(raw);
+  const { picked, frozen } = opts;
+  const contacts = opts.contacts
+    .map((c) => ({ name: c.name, address: cleanAddress(c.address) }))
+    .filter((c) => detectNetwork(c.address));
   const detected = detectNetwork(address);
-  const base = { address, picked, detected, listDate: frozen.date };
+  const listDate = networkListDate(frozen, picked);
+  const base = { address, picked, detected, listDate };
   const stop = (outcome: AddressResult['outcome'], extra: Partial<AddressResult> = {}): AddressResult => {
     const reasons: Reason[] = [{ kind: outcome, level: 'stop', text: WORDING[outcome as keyof typeof WORDING], span: address, source: 'code' }];
     return { ...base, outcome, level: 'stop', reasons, ...extra };
   };
 
-  if (!detected) return stop('invalid');
+  // A string we cannot read is not a red flag. A checksum failure on a real shape is.
+  if (!address || !detected) {
+    return { ...base, detected: null, outcome: 'unreadable', level: 'none', reasons: [] };
+  }
   if (detected !== picked) return stop('wrong_network');
   if (!isValid(address, picked)) return stop('invalid');
 

@@ -2,7 +2,7 @@ import { Clipboard as ClipboardIcon, Image01Icon, Moon02Icon, QrCodeIcon, Settin
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import type { Network } from '@kagua/core';
+import { networkListDate, type Network } from '@kagua/core';
 import { Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { modelProvider } from '../model/provider';
 import { frozen, frozenCount } from '../state/engine';
@@ -166,11 +166,14 @@ export default function Check() {
 
         <View style={[styles.footer, { borderTopColor: t.track }]}>
           <View style={{ gap: 3 }}>
-            <Txt mono w={500} size={20} style={{ letterSpacing: -0.4 }}>
-              {frozen.date ?? 'none'}
+            <Txt mono w={500} size={15} style={{ letterSpacing: -0.4 }}>
+              {`Tron ${networkListDate(frozen, 'tron') ?? 'none'}`}
+            </Txt>
+            <Txt mono w={500} size={15} style={{ letterSpacing: -0.4 }}>
+              {`EVM ${networkListDate(frozen, 'evm') ?? 'none'}`}
             </Txt>
             <Txt size={12} color={t.muted}>
-              frozen-list date
+              frozen-list dates
             </Txt>
           </View>
           <View style={{ gap: 3, alignItems: 'flex-end' }}>

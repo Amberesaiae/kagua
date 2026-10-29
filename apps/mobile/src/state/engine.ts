@@ -1,7 +1,8 @@
-import { createMockProvider, type FrozenList, type ModelProvider } from '@kagua/core';
+import { checkChat, createMockProvider, type FrozenList, type ModelProvider } from '@kagua/core';
 import frozenJson from '@kagua/core/data/frozen.json';
 import { presentAddress, presentCantTell, presentChat } from '../logic/present';
 import { timedAddressCheck, timedChatCheck, timedScreenshotCheck } from '../logic/steps';
+import { resolveChatTagger } from '../logic/tagger';
 import { modelProvider } from '../model/provider';
 import { recordCheck } from './actions';
 import { getState, setState, type Job, type Tagger } from './store';
@@ -14,16 +15,7 @@ const mock = createMockProvider({ delayMs: 350 });
 
 /** The phone model once downloaded and loaded; the mock on web; otherwise nothing (code rules only). */
 async function chatTagger(): Promise<{ provider: ModelProvider | null; tagger: Tagger }> {
-  if (!modelProvider) return { provider: mock, tagger: 'mock' };
-  if (!getState().modelsReady) return { provider: null, tagger: 'none' };
-  if (!modelProvider.isReady()) {
-    try {
-      await modelProvider.prepare();
-    } catch {
-      return { provider: null, tagger: 'none' };
-    }
-  }
-  return { provider: modelProvider, tagger: 'qvac' };
+  return resolveChatTagger(modelProvider, getState().modelsReady, mock);
 }
 
 /** Run the queued job. Code decides; the view is built from the core result only. */
@@ -41,6 +33,13 @@ export async function runJob(job: Job): Promise<void> {
     recordCheck(job, view);
     return;
   }
+  if (job.kind === 'chat' && checkChat(job.text, opts, []).level === 'stop') {
+    const run = await timedChatCheck(job.text, opts, null);
+    const view = run.verdict ? presentChat(run.verdict, { modelUsed: false }) : presentCantTell('There was no text to read. Paste the chat, or type what it says.');
+    setState({ view, steps: run.steps, tagger: 'none' });
+    recordCheck(job, view);
+    return;
+  }
   const { provider, tagger } = await chatTagger();
   if (job.kind === 'screenshot') {
     if (!provider || tagger !== 'qvac') {
@@ -50,13 +49,13 @@ export async function runJob(job: Job): Promise<void> {
       return;
     }
     const run = await timedScreenshotCheck(job.uri, opts, provider, provider);
-    const view = run.verdict ? presentChat(run.verdict) : presentCantTell("Kagua couldn't read text in this image. Paste the chat text instead.");
+    const view = run.verdict ? presentChat(run.verdict, { modelUsed: run.modelUsed }) : presentCantTell("Kagua couldn't read text in this image. Paste the chat text instead.");
     setState({ view, steps: run.steps, tagger: run.modelUsed ? tagger : 'none' });
     recordCheck(job, view);
     return;
   }
   const run = await timedChatCheck(job.text, opts, provider);
-  const view = run.verdict ? presentChat(run.verdict) : presentCantTell('There was no text to read. Paste the chat, or type what it says.');
+  const view = run.verdict ? presentChat(run.verdict, { modelUsed: run.modelUsed }) : presentCantTell('There was no text to read. Paste the chat, or type what it says.');
   setState({ view, steps: run.steps, tagger: run.modelUsed ? tagger : 'none' });
   recordCheck(job, view);
 }

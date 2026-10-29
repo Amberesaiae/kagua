@@ -1,5 +1,5 @@
 import { ArrowLeft01Icon, Delete02Icon } from '@hugeicons/core-free-icons';
-import { detectNetwork, isValid } from '@kagua/core';
+import { detectNetwork, isValid, networkListDate } from '@kagua/core';
 import { goBack, goHome } from '../ui/nav';
 import { useState } from 'react';
 import { Pressable, ScrollView, TextInput, View } from 'react-native';
@@ -148,7 +148,8 @@ export default function Settings() {
           <Eyebrow>ON THIS PHONE</Eyebrow>
           <Glass radius={18} style={{ padding: 16, gap: 10 }}>
             <Row k="Frozen addresses" v={frozenCount.toLocaleString('en-US')} />
-            <Row k="List date" v={frozen.date ?? 'none'} />
+            <Row k="Tron list date" v={networkListDate(frozen, 'tron') ?? 'none'} />
+            <Row k="EVM list date" v={networkListDate(frozen, 'evm') ?? 'none'} />
             <Row k="Chat tagger" v={!modelProvider ? 'Demo mock (web build)' : modelsReady ? 'Qwen3 0.6B on this phone' : 'Not downloaded'} />
             <Row k="Screenshot reader" v={!modelProvider ? 'Phone only' : modelsReady ? 'QVAC OCR on this phone' : 'Not downloaded'} />
           </Glass>

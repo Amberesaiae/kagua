@@ -24,8 +24,52 @@ export interface ModelProvider {
 const KINDS: readonly ModelTagKind[] = ['pressure', 'impersonation', 'off_platform', 'fake_support'];
 
 /**
- * Keep only well-formed tags whose span is quoted verbatim from the chat.
- * A tag that can't point at the exact text is dropped, so a model can't invent evidence.
+ * Words a tag must point at. A quote of the whole ordinary message, or a tiny
+ * span such as "ok", is not evidence. This never lowers a code warning.
+ */
+const RISK_CUE = /urgent|hurry|quickly|immediately|\basap\b|haraka|sasa\s+hivi|right\s+now|send\s+now|pay\s+now|or\s+i\s+cancel|last\s+chance|last\s+warning|whatsapp|telegram|nje\s+ya|outside\s+the\s+(?:app|platform)|customer\s+(?:care|support)|support\s+(?:team|agent)|huduma\s+kwa\s+wateja|official\s+(?:agent|admin)|admin\s+wa|from\s+(?:binance|bybit|okx|tether)|seed\s+phrase|recovery\s+(?:phrase|words?)|private\s+key|secret\s+key|mnemonic|\b(?:12|24)\s+words\b|twelve\s+words|twenty[- ]?four\s+words|your\s+pin|your\s+password|your\s+otp|one[- ]?time\s+(?:code|password)|namba\s+ya\s+siri|nambari\s+ya\s+siri|neno\s+la\s+siri|msimbo/i;
+
+const MIN_SPAN = 4;
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** A warning ("never share your password") is not a request. */
+function inNegatedSentence(text: string, span: string): boolean {
+  const idx = text.indexOf(span);
+  if (idx < 0) return false;
+  const start = Math.max(text.lastIndexOf('.', idx), text.lastIndexOf('\n', idx)) + 1;
+  const ends = [text.indexOf('.', idx), text.indexOf('\n', idx)].filter((n) => n >= 0);
+  const end = ends.length ? Math.min(...ends) + 1 : text.length;
+  return /\b(never|don'?t|do not|usi\w*)\b/i.test(text.slice(start, end));
+}
+
+/** A quote of the whole chat does not point at the risky words. */
+function coversMessage(text: string, span: string): boolean {
+  const norm = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase().replace(/[.!?]+$/g, '');
+  const t = norm(text);
+  const s = norm(span);
+  if (!t || !s) return true;
+  return s === t || (t.includes(s) && s.length >= Math.floor(t.length * 0.85));
+}
+
+/** Find the model's quote in the chat. Case and spacing differences still count. */
+function locateSpan(text: string, span: string): string | null {
+  const s = span.trim();
+  if (s.length < MIN_SPAN) return null;
+  const exact = text.indexOf(s);
+  if (exact >= 0) return s;
+  const parts = s.split(/\s+/).filter(Boolean).map(escapeRegExp);
+  if (!parts.length) return null;
+  const m = new RegExp(parts.join('\\s+'), 'i').exec(text);
+  return m ? m[0] : null;
+}
+
+/**
+ * Keep only well-formed tags whose span is quoted from the chat and points at
+ * risky words. A tag that can't point at that text is dropped, so a model
+ * can't invent evidence or raise an ordinary chat.
  */
 export function sanitizeTags(text: string, raw: unknown): ModelTag[] {
   if (!Array.isArray(raw)) return [];
@@ -36,12 +80,12 @@ export function sanitizeTags(text: string, raw: unknown): ModelTag[] {
     const { kind, span } = t as Record<string, unknown>;
     if (typeof kind !== 'string' || !KINDS.includes(kind as ModelTagKind)) continue;
     if (typeof span !== 'string') continue;
-    const s = span.trim();
-    if (s.length < 2 || !text.includes(s)) continue;
-    const key = `${kind}\u0000${s}`;
+    const located = locateSpan(text, span);
+    if (!located || coversMessage(text, located) || inNegatedSentence(text, located) || !RISK_CUE.test(located)) continue;
+    const key = `${kind}\u0000${located}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push({ kind: kind as ModelTagKind, span: s });
+    out.push({ kind: kind as ModelTagKind, span: located });
   }
   return out;
 }
@@ -50,35 +94,58 @@ export interface ChatRun {
   verdict: Verdict | null;
   /** True when there was nothing to read: the app shows "Can't tell". */
   cantTell: boolean;
-  /** False when the model failed or wasn't asked; code rules still ran. */
+  /** False when the model failed, timed out, or wasn't asked; code rules still ran. */
   modelUsed: boolean;
 }
 
-/** Run a chat check: code rules always, model tags if the model answers. */
-export async function runChatCheck(text: string, opts: CheckOptions, provider: ModelProvider | null): Promise<ChatRun> {
-  if (!text.trim()) return { verdict: null, cantTell: true, modelUsed: false };
-  let tags: ModelTag[] = [];
-  let modelUsed = false;
-  if (provider) {
-    try {
-      tags = sanitizeTags(text, await provider.tagChat(text));
-      modelUsed = true;
-    } catch {
-      // A model failure never lowers anything: code rules still decide.
-    }
+/** How long a chat tag may take before code shows its own result. */
+export const MODEL_TAG_TIMEOUT_MS = 20_000;
+
+export function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('model timeout')), ms);
+    p.then(
+      (v) => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(timer);
+        reject(e);
+      },
+    );
+  });
+}
+
+/** Ask the model for tags. A throw, a timeout, or no provider means the model did not run. */
+export async function readModelTags(text: string, provider: ModelProvider | null, timeoutMs = MODEL_TAG_TIMEOUT_MS): Promise<{ tags: ModelTag[]; modelUsed: boolean }> {
+  if (!provider) return { tags: [], modelUsed: false };
+  try {
+    const raw = await withTimeout(provider.tagChat(text), timeoutMs);
+    return { tags: sanitizeTags(text, raw), modelUsed: true };
+  } catch {
+    return { tags: [], modelUsed: false };
   }
+}
+
+/** Run a chat check: code rules always, model tags if the model answers. A code Stop is not delayed. */
+export async function runChatCheck(text: string, opts: CheckOptions, provider: ModelProvider | null, timeoutMs = MODEL_TAG_TIMEOUT_MS): Promise<ChatRun> {
+  if (!text.trim()) return { verdict: null, cantTell: true, modelUsed: false };
+  const code = checkChat(text, opts, []);
+  if (code.level === 'stop') return { verdict: code, cantTell: false, modelUsed: false };
+  const { tags, modelUsed } = await readModelTags(text, provider, timeoutMs);
   return { verdict: checkChat(text, opts, tags), cantTell: false, modelUsed };
 }
 
-/** OCR a screenshot, then run the chat check on what was read. */
-export async function runScreenshotCheck(image: ImageInput, opts: CheckOptions, provider: ModelProvider): Promise<ChatRun & { text: string }> {
+/** OCR a screenshot, then run the chat check on what was read. A stuck read is "Can't tell". */
+export async function runScreenshotCheck(image: ImageInput, opts: CheckOptions, provider: ModelProvider, timeoutMs = MODEL_TAG_TIMEOUT_MS): Promise<ChatRun & { text: string }> {
   let text = '';
   try {
-    text = (await provider.ocr(image)).text ?? '';
+    text = (await withTimeout(provider.ocr(image), timeoutMs)).text ?? '';
   } catch {
     return { verdict: null, cantTell: true, modelUsed: false, text: '' };
   }
-  return { ...(await runChatCheck(text, opts, provider)), text };
+  return { ...(await runChatCheck(text, opts, provider, timeoutMs)), text };
 }
 
 // Mock patterns. These only stand in for the model in tests and the web build;

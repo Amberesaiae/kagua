@@ -35,6 +35,7 @@ const LABEL: Record<string, string> = {
   off_platform: 'OFF-APP',
   impersonation: 'IMPERSONATION',
   fake_support: 'FAKE SUPPORT',
+  fake_payment: 'FAKE PAYMENT',
   asks_seed_phrase: 'SEED PHRASE',
   asks_pin: 'PIN',
   asks_otp: 'ONE-TIME CODE',
@@ -71,6 +72,9 @@ function stopSub(reasons: Reason[], lookAlike?: AddressResult): string {
 }
 
 export function presentAddress(r: AddressResult): ResultView {
+  if (r.outcome === 'unreadable') {
+    return presentCantTell("Kagua can't read this as a TRC-20 or EVM address. Check the paste for a missing character or a bad copy.");
+  }
   const screen = LEVEL_SCREEN[r.level];
   const view: ResultView = { screen, headline: '', sub: '', evidence: r.reasons.map(toEvidence), listDate: r.listDate };
   if (screen === 'stop') {
@@ -90,7 +94,8 @@ export function presentAddress(r: AddressResult): ResultView {
   return view;
 }
 
-export function presentChat(v: Verdict): ResultView {
+export function presentChat(v: Verdict, opts?: { modelUsed?: boolean }): ResultView {
+  const modelUsed = opts?.modelUsed ?? false;
   const screen = LEVEL_SCREEN[v.level];
   const lookAlike = v.addresses.find((a) => a.outcome === 'look_alike');
   const view: ResultView = {
@@ -112,7 +117,9 @@ export function presentChat(v: Verdict): ResultView {
     view.sub = 'No PIN, seed phrase or frozen address found.';
   } else {
     view.headline = 'No flags found.';
-    view.sub = 'Kagua found no PIN, seed phrase, frozen address or pressure in this chat. This proves nothing about the trade.';
+    view.sub = modelUsed
+      ? 'Kagua found no PIN, seed phrase, frozen address or pressure in this chat. This proves nothing about the trade.'
+      : 'Kagua found no PIN, seed phrase, frozen address, or known pressure wording. The on-phone model did not run, so it did not look for other pressure or impersonation wording. This proves nothing about the trade.';
   }
   return view;
 }
