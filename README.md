@@ -77,7 +77,7 @@ Quoted lines come from the written rules or from tags. Model lines are marked. I
 
 ### No flags found
 
-The screen is deliberately neutral: no green, no tick. For an address it says the address is not on the frozen list as of that network's list date, and that this proves nothing. It also says to confirm the payment in the trader's own M-Pesa or bank app. The timings on the screen are how long those steps took in that run. In this web picture each step is shown as under 1 ms. That is the screen's own timer for that browser check. It is not a phone measurement.
+The screen uses the theme background, near-black #050605 or off-white #F3F4EE, and an information icon. It does not use the Stop red #C42F1F. For an address it says the address is not on the frozen list as of that network's list date, and that this proves nothing. It also says to confirm the payment in the trader's own M-Pesa or bank app. The timings on the screen are how long those steps took in that run. In this web picture each step is shown as under 1 ms. That is the screen's own timer for that browser check. It is not a phone measurement.
 
 ![No flags found for an address, dark theme, Expo web build. The line says the address is not on the frozen list as of 2026-10-29 and that this proves nothing.](docs/screenshots/dark-no-flags.png)
 
@@ -132,7 +132,7 @@ Not in the code. `docs/cloud-run/PROGRESS.md` still has receipt reuse (SHA-256, 
 
 ### Light and dark
 
-Theme tokens live in `apps/mobile/src/theme/tokens.ts`. Settings can follow the system, or force dark or light. Lime is the action colour. It is not a result colour. Stop is red. Check more is amber. No flags found stays neutral.
+Theme tokens live in `apps/mobile/src/theme/tokens.ts`. Settings can follow the system, or force dark or light. The dark background is #050605. The light background is #F3F4EE. Action buttons are lime #C6F432. The Stop screen uses #C42F1F, and that red is only for Stop. Check more uses the warning amber from the same file (#FFB020 on the dark theme). No flags found and Can't tell stay on the theme background.
 
 ![Home screen in the light theme. Expo web build. Same frozen-list dates and the same 9,739 count.](docs/screenshots/light-home.png)
 
@@ -142,7 +142,7 @@ Theme tokens live in `apps/mobile/src/theme/tokens.ts`. Settings can follow the 
 
 ### Landing page
 
-The waitlist page is not in this branch. It is in a separate pull request. Screenshots of that page are not included here.
+The landing page (separate PR).
 
 ## How QVAC is used
 
@@ -317,7 +317,7 @@ Unfinished items still unchecked in the progress doc: receipt reuse, a "first ti
 
 Also open in that doc: the Tron cross-check gap (16 only in the archive, 1,809 only on the chain pull), confirming the phone, allowing `docs.qvac.tether.io` so the adapter can be checked, confirming the Expo SDK 54 choice on a device, and asking the organisers whether the one-time model download counts as offline.
 
-The web demo tagger is a keyword stand-in. It is not QVAC. A green result colour is intentionally unused, because a bright green result would read as an all-clear.
+The web demo tagger is a keyword stand-in. It is not QVAC.
 
 ## Roadmap
 
