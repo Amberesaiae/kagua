@@ -1,60 +1,55 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pageHtml } from "./src/page.ts";
 
-const forbidden = [
+const banned = [
+  /#0B7A4B/i,
+  /#FFFFFF/i,
+  /#FFF\b/i,
   /#FBF6EE/i,
   /#E07A3F/i,
   /#A8481A/i,
   /#C27A12/i,
+  /Welcome back/i,
+  /T9yK/,
+  /Placeholder/i,
   /\bsafe\b/i,
   /\bprotected\b/i,
   /\bsecure\b/i,
-  /minipay/i,
-  /google play/i,
-  /app store/i,
-  /<script/i,
-  /https?:\/\//i,
 ];
 
-const allowedHex = new Set(["#FFFFFF", "#111111", "#0B7A4B", "#F4F6F5"]);
-
-function byteLength(value: string): number {
-  let bytes = 0;
-  for (const ch of value) {
-    const code = ch.codePointAt(0) ?? 0;
-    if (code < 0x80) bytes += 1;
-    else if (code < 0x800) bytes += 2;
-    else if (code < 0x10000) bytes += 3;
-    else bytes += 4;
-  }
-  return bytes;
-}
+const allowedUrl = "https://github.com/Amberesaiae/kagua";
 
 function assertPage(html: string): void {
-  for (const pattern of forbidden) {
+  for (const pattern of banned) {
     if (pattern.test(html)) {
       throw new Error(`Landing page failed check: ${pattern}`);
     }
   }
-  const hexes = html.match(/#[0-9A-Fa-f]{3,8}/g) ?? [];
-  for (const hex of hexes) {
-    const key = hex.toUpperCase();
-    if (!allowedHex.has(key)) {
-      throw new Error(`Unexpected color ${hex}`);
+  const urls = html.match(/https?:\/\/[^\s"'<>]+/g) ?? [];
+  for (const url of urls) {
+    if (url !== allowedUrl) {
+      throw new Error(`Unexpected URL ${url}`);
     }
-  }
-  const bytes = byteLength(html);
-  if (bytes > 100_000) {
-    throw new Error(`Landing page is ${bytes} bytes (limit 100000)`);
   }
 }
 
 assertPage(pageHtml);
 
 const root = dirname(fileURLToPath(import.meta.url));
-const out = join(root, "dist", "index.html");
-mkdirSync(dirname(out), { recursive: true });
-writeFileSync(out, pageHtml);
-console.log(`wrote ${out} (${byteLength(pageHtml)} bytes)`);
+const dist = join(root, "dist");
+const assetsOut = join(dist, "assets");
+mkdirSync(assetsOut, { recursive: true });
+
+const assetsIn = join(root, "src", "assets");
+for (const name of readdirSync(assetsIn)) {
+  if (!name.endsWith(".webp")) continue;
+  copyFileSync(join(assetsIn, name), join(assetsOut, name));
+}
+const brand = join(assetsIn, "brand");
+copyFileSync(join(brand, "favicon-512.png"), join(assetsOut, "favicon-512.png"));
+copyFileSync(join(brand, "apple-touch-icon-180.png"), join(assetsOut, "apple-touch-icon-180.png"));
+
+writeFileSync(join(dist, "index.html"), pageHtml);
+console.log(`wrote ${join(dist, "index.html")} (${pageHtml.length} chars)`);

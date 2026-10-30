@@ -1,437 +1,408 @@
-const mark = `<svg class="mark" viewBox="0 0 36 36" width="36" height="36" aria-hidden="true">
-  <rect width="36" height="36" rx="11" fill="#0B7A4B"/>
-  <path d="M13 10v16M13 18.1 23.4 11M13 17.7 23.4 25" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`;
+import { logoMarkup } from "./logo.ts";
 
-const logo = `<div class="logo">${mark}<span>Kagwa Wire</span></div>`;
-
-const pasteIcon = `<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <rect x="7" y="5" width="11" height="15" rx="2"/>
-  <path d="M10 5.2h4M10 11h6M10 15h4"/>
-</svg>`;
-
-const scanIcon = (stroke: string, size: number) => `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M8 4H5v3M16 4h3v3M19 16v3h-3M5 16v3h3"/>
-  <circle cx="12" cy="12" r="2.2" fill="${stroke}" stroke="none"/>
-</svg>`;
-
-const chatIcon = `<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M5 7.5A1.5 1.5 0 0 1 6.5 6h11A1.5 1.5 0 0 1 19 7.5v7a1.5 1.5 0 0 1-1.5 1.5H12l-4 3v-3H6.5A1.5 1.5 0 0 1 5 14.5z"/>
-</svg>`;
-
-const statusIcons = `<svg viewBox="0 0 68 16" width="68" height="16" aria-hidden="true">
-  <rect x="0" y="9" width="3" height="5" rx="0.6" fill="#111111"/>
-  <rect x="5" y="6" width="3" height="8" rx="0.6" fill="#111111"/>
-  <rect x="10" y="3" width="3" height="11" rx="0.6" fill="#111111"/>
-  <rect x="15" y="1" width="3" height="13" rx="0.6" fill="#111111"/>
-  <path d="M26 11.5c1.6-1.4 3.6-1.4 5.2 0" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M23.6 9.2c2.8-2.4 6.8-2.4 9.6 0" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M21.4 6.8c4.2-3.4 10.2-3.4 14.4 0" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round"/>
-  <rect x="44" y="3" width="18" height="10" rx="2" fill="none" stroke="#111111" stroke-width="1.4"/>
-  <rect x="46" y="5" width="12" height="6" rx="1" fill="#111111"/>
-  <rect x="62.5" y="6" width="1.6" height="4" rx="0.4" fill="#111111"/>
-</svg>`;
-
-const phone = `<div class="phone" role="img" aria-label="Phone showing a Kagwa Wire result. Stop. This address matches a frozen one.">
-  <div class="screen">
-    <div class="status"><span>12:30</span>${statusIcons}</div>
-    <div class="greet">
-      <div class="avatar">AK</div>
-      <p>Welcome back 👋</p>
-      <div class="scan">${scanIcon("#0B7A4B", 22)}</div>
-    </div>
-    <div class="card-slot">
-      <div class="result">
-        <p class="result-label">Result</p>
-        <p class="result-level">Stop</p>
-        <p class="result-why">This address matches a frozen one</p>
-        <div class="detail">
-          <span class="detail-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></span>
-          <span>T9yK…m2Qa · frozen list</span>
-        </div>
-      </div>
-    </div>
-    <div class="actions">
-      <div class="action"><div class="orb">${pasteIcon}</div><span>Paste</span></div>
-      <div class="action"><div class="orb">${scanIcon("#FFFFFF", 26)}</div><span>Scan</span></div>
-      <div class="action"><div class="orb">${chatIcon}</div><span>Chat</span></div>
-    </div>
-  </div>
-</div>`;
+const logo = logoMarkup();
 
 const css = `
-:root { color-scheme: light; }
+:root { color-scheme: dark; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
+html, body {
   margin: 0;
-  background: #FFFFFF;
-  color: #111111;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #050605;
+  color: #F3F4EE;
+}
+body {
+  font-family: Geist, "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, p { margin: 0; }
 a { color: inherit; }
-.logo {
-  display: flex;
+img { max-width: 100%; }
+.inner { max-width: 1080px; margin: 0 auto; }
+.top { padding: 28px 64px 0; }
+.wordmark {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: #0B7A4B;
-  font-weight: 800;
-  font-size: 26px;
-  letter-spacing: -0.045em;
-  line-height: 1;
+  line-height: 0;
+  transition: transform 180ms ease;
 }
+.wordmark-svg { display: block; height: 40px; width: auto; }
+.wire-draw { stroke-dasharray: 1; }
+.wordmark:hover { transform: translateY(-1px); }
 .hero {
-  position: relative;
-  height: 100vh;
-  min-height: 760px;
-  overflow: hidden;
-  background: #FFFFFF;
-}
-.blob {
-  position: absolute;
-  border-radius: 50%;
-  background: #F4F6F5;
-  pointer-events: none;
-}
-.blob-a { width: 560px; height: 560px; right: -70px; bottom: -200px; }
-.blob-b { width: 280px; height: 280px; right: 300px; top: -40px; }
-.hero-copy {
-  position: relative;
-  z-index: 2;
-  padding: 48px 0 0 76px;
-  max-width: 700px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 340px);
+  gap: 48px;
+  align-items: start;
+  padding: 56px 64px 24px;
 }
 h1 {
-  margin-top: 88px;
-  font-size: 78px;
-  line-height: 0.94;
-  letter-spacing: -0.048em;
-  font-weight: 800;
-  color: #111111;
-}
-.sub {
-  margin-top: 22px;
-  max-width: 390px;
-  font-size: 18px;
-  line-height: 1.4;
-  font-weight: 400;
-  color: #111111;
-}
-.pills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 11em;
   margin-top: 28px;
+  color: #F3F4EE;
+  font-size: 56px;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
 }
-.pill {
+.line { display: block; }
+.lime { color: #C6F432; }
+.sub {
+  max-width: 38em;
+  margin-top: 20px;
+  color: #A3AA9C;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
-  padding: 0 22px;
+  height: 40px;
+  padding: 0 16px;
   border-radius: 999px;
-  background: #111111;
-  color: #FFFFFF;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.pill:focus-visible {
-  outline: 3px solid #0B7A4B;
-  outline-offset: 3px;
-}
-.note {
-  margin-top: 14px;
   font-size: 14px;
-  line-height: 1.4;
-  color: #111111;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  line-height: 1;
 }
-.phone {
+.btn {
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+.btn-primary { background: #C6F432; color: #050605; }
+.btn-secondary {
+  background: transparent;
+  color: #F3F4EE;
+  box-shadow: inset 0 0 0 1px #C6F432;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(198, 244, 50, 0.32);
+}
+.btn-secondary:hover { background: rgba(198, 244, 50, 0.14); }
+.btn-primary:active { transform: translateY(-1px) scale(0.98); }
+.btn-secondary:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 2px solid #C6F432; outline-offset: 3px; }
+.note {
+  max-width: 40em;
+  margin-top: 16px;
+  color: #A3AA9C;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.phone-slot { position: relative; }
+.glow {
   position: absolute;
-  z-index: 1;
-  top: 22px;
-  right: 56px;
-  width: 412px;
-  height: 848px;
-  background: #111111;
-  border-radius: 50px;
-  padding: 10px;
-  box-shadow: 0 28px 60px rgba(17, 17, 17, 0.14);
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: 6%;
+  height: 72%;
+  background: radial-gradient(closest-side, rgba(198, 244, 50, 0.22), rgba(198, 244, 50, 0) 72%);
+  pointer-events: none;
 }
-.screen {
-  height: 100%;
-  background: #F4F6F5;
-  border-radius: 40px;
-  padding: 12px 14px 24px;
-  overflow: hidden;
-}
-.status {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px 0;
-  color: #111111;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.greet {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 22px 8px 0;
-}
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #0B7A4B;
-  color: #FFFFFF;
-  display: grid;
-  place-items: center;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  flex: none;
-}
-.greet p {
-  flex: 1;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: #111111;
-}
-.scan {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  background: #FFFFFF;
-  display: grid;
-  place-items: center;
-  flex: none;
-}
-.card-slot { position: relative; margin: 26px 4px 52px; }
-.result {
+.phone { position: relative; z-index: 1; margin: 0; }
+.bezel {
+  background: #0C0E0B;
+  border-radius: 32px;
+  padding: 22px 10px 12px;
   position: relative;
-  background: #0B7A4B;
-  color: #FFFFFF;
-  border-radius: 30px;
-  min-height: 430px;
-  padding: 28px 26px 86px;
 }
-.result-label { font-size: 15px; font-weight: 600; }
-.result-level {
+.phone-stop .bezel { box-shadow: inset 0 0 0 1px #C42F1F; }
+.phone-hero.phone-stop .bezel::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 38px;
+  border: 1px solid #C42F1F;
+  opacity: 0.28;
+  pointer-events: none;
+}
+.camera {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: #14170F;
+}
+.bezel img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 22px;
+  background: #050605;
+}
+.phone figcaption, .shot figcaption {
   margin-top: 10px;
-  font-size: 78px;
-  line-height: 0.88;
-  font-weight: 800;
-  letter-spacing: -0.045em;
+  color: #A3AA9C;
+  font-size: 13px;
+  line-height: 1.4;
 }
-.result-why {
-  margin-top: 14px;
-  font-size: 16px;
+.section { padding: 72px 64px 0; }
+h2 {
+  color: #F3F4EE;
+  font-size: 28px;
   font-weight: 500;
   letter-spacing: -0.02em;
-  white-space: nowrap;
+  line-height: 1.2;
 }
-.detail {
-  position: absolute;
-  left: 20px;
-  bottom: -34px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: max-content;
-  max-width: calc(100% - 28px);
-  background: #FFFFFF;
-  color: #111111;
-  border-radius: 18px;
-  padding: 12px 16px 12px 12px;
-  box-shadow: 0 14px 30px rgba(17, 17, 17, 0.1);
-}
-.detail-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: #0B7A4B;
+.steps, .features, .shots {
   display: grid;
-  place-items: center;
-  flex: none;
-}
-.detail span:last-child {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.actions {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 18px 0;
-}
-.action {
-  width: 86px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.orb {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: #0B7A4B;
-  display: grid;
-  place-items: center;
-}
-.action span {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: #111111;
-}
-.section { padding: 88px 76px 0; }
-.inner { max-width: 1080px; margin: 0 auto; }
-h2 {
-  font-size: 42px;
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-}
-.steps, .features {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 32px;
-  margin-top: 36px;
+  gap: 18px;
+  margin-top: 28px;
   padding: 0;
   list-style: none;
+}
+.steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.steps li, .feature {
+  background: #14170F;
+  border-radius: 20px;
+  padding: 22px 22px 24px;
 }
 .steps span {
   display: block;
   margin-bottom: 12px;
-  color: #0B7A4B;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  color: #C6F432;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
 }
-.steps p, .features p {
+.steps h3, .feature h3 {
+  color: #F3F4EE;
   font-size: 18px;
-  line-height: 1.35;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.02em;
-  max-width: 28ch;
+  line-height: 1.3;
 }
-.features h3 {
-  margin-bottom: 8px;
-  font-size: 22px;
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+.steps p, .feature p {
+  margin-top: 8px;
+  color: #A3AA9C;
+  font-size: 15px;
+  line-height: 1.5;
 }
-.features p { font-weight: 400; font-size: 16px; line-height: 1.45; }
+.features { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.shots { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+.shot { margin: 0; }
+.shot .bezel { border-radius: 26px; padding: 18px 8px 10px; }
+.shot img { border-radius: 18px; }
+.footer { padding: 72px 64px 64px; }
+.footer-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+.footer-line, .credit { color: #A3AA9C; font-size: 14px; line-height: 1.5; max-width: 46em; }
+.footer-line a { color: #C6F432; text-decoration: none; }
+.footer-line a:focus-visible { outline: 2px solid #C6F432; outline-offset: 3px; }
 #how { scroll-margin-top: 24px; }
-.footer { padding: 88px 76px 80px; }
-.footer-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
-.footer .tag {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-}
-.wired { font-size: 14px; line-height: 1.4; }
 @media (max-width: 900px) {
-  .hero { height: auto; min-height: 0; overflow: hidden; }
-  .hero-copy { padding: 24px 20px 0; max-width: none; }
-  h1 { margin-top: 28px; font-size: 42px; }
-  .sub { max-width: 34ch; font-size: 16px; margin-top: 16px; }
-  .pills { margin-top: 20px; }
-  .pill { height: 52px; padding: 0 16px; }
-  .phone {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: min(360px, calc(100% - 32px));
-    height: auto;
-    margin: 20px auto 8px;
+  .top, .hero, .section, .footer { padding-left: 20px; padding-right: 20px; }
+  .top { padding-top: 22px; }
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 32px;
   }
-  .screen { height: auto; }
-  .greet { padding-top: 16px; }
-  .card-slot { margin-top: 18px; margin-bottom: 46px; }
-  .result { min-height: 0; padding: 22px 16px 72px; }
-  .result-level { font-size: 64px; }
-  .result-why { font-size: 13px; }
-  .blob-a { width: 240px; height: 240px; right: -20px; bottom: 40px; }
-  .blob-b { width: 120px; height: 120px; right: 16px; top: auto; bottom: 220px; }
-  .section, .footer { padding-left: 20px; padding-right: 20px; }
+  h1 { margin-top: 22px; font-size: 36px; }
+  .sub { font-size: 16px; }
+  .phone, .phone-slot { width: min(320px, 100%); }
   .section { padding-top: 56px; }
+  h2 { font-size: 24px; }
+  .steps, .features, .shots { grid-template-columns: 1fr; }
   .footer { padding-top: 56px; padding-bottom: 48px; }
-  h2 { font-size: 32px; }
-  .steps, .features { grid-template-columns: 1fr; gap: 28px; }
-  .footer .tag { font-size: 28px; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes phone-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes phone-float {
+  0%, 100% { transform: translateY(-6px); }
+  50% { transform: translateY(6px); }
+}
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.95; }
+}
+@keyframes wire-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes wordmark-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes stop-pulse {
+  0%, 100% { opacity: 0.18; }
+  50% { opacity: 0.42; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .rise {
+    animation: rise 600ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .js .reveal.is-in {
+    animation: rise 600ms ease-out both;
+    animation-delay: var(--d, 0ms);
+  }
+  .js .phone-hero { animation: phone-in 700ms ease-out both; }
+  .js .phone-hero .bezel { animation: phone-float 6s ease-in-out 700ms infinite; }
+  .js .glow { animation: glow-breathe 7s ease-in-out infinite; }
+  .js .wire-draw { animation: wire-draw 1.2s ease-out both; }
+  .js .wordmark-letters { animation: wordmark-in 600ms ease-out both; }
+  .js .phone-hero.phone-stop .bezel::after { animation: stop-pulse 4.8s ease-in-out 1s infinite; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .rise, .reveal, .phone-hero, .phone-hero .bezel, .glow, .wire-draw, .wordmark-letters, .phone-hero.phone-stop .bezel::after {
+    animation: none !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .wire-draw { stroke-dashoffset: 0 !important; }
+  .btn, .wordmark { transition: none; }
+  .btn:hover, .btn:active, .wordmark:hover { transform: none; }
+  .btn-primary:hover, .btn-primary:active { box-shadow: none; }
+  .btn-secondary:hover { background: transparent; }
 }
 `;
+
+function phone(file: string, alt: string, caption: string, stop: boolean): string {
+  const klass = stop ? "phone phone-hero phone-stop" : "phone phone-hero";
+  return `<figure class="${klass}">
+    <div class="bezel">
+      <span class="camera" aria-hidden="true"></span>
+      <img src="assets/${file}" alt="${alt}" width="600" height="1298" />
+    </div>
+    <figcaption>${caption}</figcaption>
+  </figure>`;
+}
 
 export const pageHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light" />
-  <meta name="description" content="Kagwa Wire checks addresses and chats in seconds, so you never have to wonder." />
-  <title>Kagwa Wire — See the scam before it sees you</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='11' fill='%230B7A4B'/%3E%3C/svg%3E" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="description" content="Kagwa Wire is an Android app for peer-to-peer USDT sellers. It checks a chat or an address on the phone and shows Stop, Check more, No flags found or Can't tell." />
+  <title>Kagwa Wire — Check it before you release it.</title>
+  <link rel="icon" type="image/png" href="assets/favicon-512.png" sizes="512x512" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png" />
+  <meta property="og:image" content="assets/favicon-512.png" />
+  <script>document.documentElement.classList.add("js")</script>
   <style>${css}</style>
 </head>
 <body>
-  <header class="hero">
-    <div class="blob blob-a"></div>
-    <div class="blob blob-b"></div>
-    <div class="hero-copy">
-      ${logo}
-      <h1 id="headline">See the scam<br />before it<br />sees you</h1>
-      <p class="sub">Kagwa Wire checks addresses and chats in seconds, so you never have to wonder.</p>
-      <div class="pills">
-        <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a>
-        <a class="pill" href="#how">See how it works</a>
-      </div>
-      <p class="note">Android first. Works with no internet at check time.</p>
-    </div>
-    ${phone}
-  </header>
+  <header class="top">${logo}</header>
   <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>
+          <span class="line rise" style="--d:0ms">Check it before you</span>
+          <span class="line rise" style="--d:80ms"><span class="lime">release it.</span></span>
+        </h1>
+        <p class="sub rise" style="--d:160ms">Kagwa Wire is an Android app for peer-to-peer USDT sellers. Paste the buyer's chat or the address you're about to send to. Kagwa Wire checks it on the phone and shows one of four results, Stop, Check more, No flags found or Can't tell, with the exact line that caused it.</p>
+        <div class="actions rise" style="--d:240ms">
+          <a class="btn btn-primary" href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a>
+          <a class="btn btn-secondary" href="#how">See how it works</a>
+        </div>
+        <p class="note rise" style="--d:320ms">In development for AI Yako 2026. The checks run in a web build today; the Android build with the on-phone model hasn't been tested on a phone yet.</p>
+      </div>
+      <div class="phone-slot">
+        <div class="glow" aria-hidden="true"></div>
+      ${phone(
+        "stop-frozen.webp",
+        "Stop screen for a frozen Tron address in the Kagwa Wire web build.",
+        "Screens from the web build. Phone build not yet run.",
+        true,
+      )}
+      </div>
+    </section>
     <section class="section" id="how" aria-labelledby="how-title">
       <div class="inner">
-        <h2 id="how-title">How it works</h2>
+        <h2 class="reveal" id="how-title" style="--d:0ms">How it works</h2>
         <ol class="steps">
-          <li><span>1</span><p>Paste or drop whatever you got</p></li>
-          <li><span>2</span><p>Kagwa Wire reads it on your phone</p></li>
-          <li><span>3</span><p>You get a straight answer: Stop, Check more or No flags found, with why</p></li>
+          <li class="reveal" style="--d:0ms">
+            <span>1</span>
+            <h3>Paste what you were sent.</h3>
+            <p>An address, or the buyer's messages. On the phone you can also use a screenshot or scan a QR.</p>
+          </li>
+          <li class="reveal" style="--d:80ms">
+            <span>2</span>
+            <h3>Kagwa Wire checks it on the phone.</h3>
+            <p>Code checks the address and the chat rules. A small QVAC model on the phone can add notes on the chat. It can raise a warning, never lower one.</p>
+          </li>
+          <li class="reveal" style="--d:160ms">
+            <span>3</span>
+            <h3>You see one of four results.</h3>
+            <p>Stop, Check more, No flags found or Can't tell, with the text that triggered it.</p>
+          </li>
         </ol>
       </div>
     </section>
-    <section class="section" id="features" aria-labelledby="features-title">
+    <section class="section" id="checks" aria-labelledby="checks-title">
       <div class="inner">
-        <h2 id="features-title">What you can check</h2>
+        <h2 class="reveal" id="checks-title" style="--d:0ms">Checks</h2>
         <div class="features">
-          <article>
+          <article class="feature reveal" style="--d:0ms">
             <h3>Address check</h3>
-            <p>Paste an address. Kagwa Wire compares it with the frozen list.</p>
+            <p>Flags a bad checksum, the wrong network, an address on Tether's frozen list, and an address that copies a saved contact's first and last characters but differs in the middle. The frozen list ships with the app, with its date shown for each network.</p>
           </article>
-          <article>
+          <article class="feature reveal" style="--d:70ms">
             <h3>Chat check</h3>
-            <p>Drop a chat. Kagwa Wire reads it on your phone.</p>
+            <p>A request for your seed phrase, PIN, password or one-time code is Stop. Rushing you, moving the talk to WhatsApp or Telegram, posing as support or an admin, or "I've already paid, release now" is Check more. English and Swahili phrases.</p>
           </article>
-          <article>
-            <h3>Works with no internet at check time</h3>
-            <p>The check runs on the phone. No connection needed then.</p>
+          <article class="feature reveal" style="--d:140ms">
+            <h3>Offline at check time</h3>
+            <p>The two models download once, about 400 MB in total (15.4 MB OCR + 382.2 MB tagger from the QVAC catalogue, plus a small detector file). After that, Kagwa Wire is designed to work with no internet at check time.</p>
           </article>
+          <article class="feature reveal" style="--d:210ms">
+            <h3>What it does not do</h3>
+            <p>It doesn't hold funds, sign, or send anything, and it can't tell you a payment arrived. "No flags found" means the checks that ran found nothing. It isn't a clearance. Confirm the payment in your own M-Pesa or bank app.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="screens" aria-labelledby="screens-title">
+      <div class="inner">
+        <h2 class="reveal" id="screens-title" style="--d:0ms">More screens</h2>
+        <div class="shots">
+          <figure class="shot phone-stop reveal" style="--d:0ms">
+            <div class="bezel">
+              <span class="camera" aria-hidden="true"></span>
+              <img src="assets/stop-lookalike.webp" alt="Stop screen for a look-alike address in the Kagwa Wire web build." width="600" height="1298" />
+            </div>
+            <figcaption>Look-alike Stop</figcaption>
+          </figure>
+          <figure class="shot reveal" style="--d:90ms">
+            <div class="bezel">
+              <span class="camera" aria-hidden="true"></span>
+              <img src="assets/no-flags.webp" alt="No flags found screen for an address in the Kagwa Wire web build." width="600" height="1298" />
+            </div>
+            <figcaption>No flags found</figcaption>
+          </figure>
+          <figure class="shot reveal" style="--d:180ms">
+            <div class="bezel">
+              <span class="camera" aria-hidden="true"></span>
+              <img src="assets/check-more.webp" alt="Check more screen for a chat in the Kagwa Wire web build." width="600" height="1298" />
+            </div>
+            <figcaption>Check more</figcaption>
+          </figure>
         </div>
       </div>
     </section>
@@ -439,11 +410,46 @@ export const pageHtml = `<!DOCTYPE html>
   <footer class="footer">
     <div class="inner footer-inner">
       ${logo}
-      <p class="tag">See the scam before it sees you.</p>
-      <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a>
-      <p class="wired">Placeholder. To be wired.</p>
+      <p class="footer-line">Built for AI Yako 2026, Offline AI apps track · <a href="https://github.com/Amberesaiae/kagua">Source on GitHub</a> · <a href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a></p>
+      <p class="credit">Frozen-address list: USDT Blacklist Archive, KYT Group / cryptoalert.report (CC-BY-4.0), and Tron USDT contract events.</p>
     </div>
   </footer>
+  <script>
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var nodes = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) {
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.add("is-in");
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        entries[i].target.classList.add("is-in");
+        io.unobserve(entries[i].target);
+      }
+    }, { threshold: 0.16, rootMargin: "0px 0px -6% 0px" });
+    for (var j = 0; j < nodes.length; j++) io.observe(nodes[j]);
+  }
+  var slot = document.querySelector(".phone-slot");
+  var glow = document.querySelector(".glow");
+  if (!slot || !glow) return;
+  var pending = false;
+  var y = 0;
+  function apply() {
+    pending = false;
+    var shift = Math.max(-16, Math.min(16, y * -0.03));
+    var extra = Math.max(-10, Math.min(10, y * -0.018));
+    slot.style.transform = "translate3d(0," + shift + "px,0)";
+    glow.style.transform = "translate3d(0," + extra + "px,0)";
+  }
+  window.addEventListener("scroll", function () {
+    y = window.scrollY || 0;
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(apply);
+  }, { passive: true });
+})();
+  </script>
 </body>
 </html>
 `;
