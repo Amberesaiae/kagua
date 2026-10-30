@@ -3,7 +3,7 @@ const mark = `<svg class="mark" viewBox="0 0 36 36" width="36" height="36" aria-
   <path d="M13 10v16M13 18.1 23.4 11M13 17.7 23.4 25" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
 
-const logo = `<div class="logo">${mark}<span>Kagua</span></div>`;
+const logo = `<div class="logo">${mark}<span>Kagwa Wire</span></div>`;
 
 const pasteIcon = `<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect x="7" y="5" width="11" height="15" rx="2"/>
@@ -32,7 +32,7 @@ const statusIcons = `<svg viewBox="0 0 68 16" width="68" height="16" aria-hidden
   <rect x="62.5" y="6" width="1.6" height="4" rx="0.4" fill="#111111"/>
 </svg>`;
 
-const phone = `<div class="phone" role="img" aria-label="Phone showing a Kagua result. Stop. This address matches a frozen one.">
+const phone = `<div class="phone" role="img" aria-label="Phone showing a Kagwa Wire result. Stop. This address matches a frozen one.">
   <div class="screen">
     <div class="status"><span>12:30</span>${statusIcons}</div>
     <div class="greet">
@@ -384,8 +384,8 @@ export const pageHtml = `<!DOCTYPE html>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light" />
-  <meta name="description" content="Kagua checks addresses and chats in seconds, so you never have to wonder." />
-  <title>Kagua — See the scam before it sees you</title>
+  <meta name="description" content="Kagwa Wire checks addresses and chats in seconds, so you never have to wonder." />
+  <title>Kagwa Wire — See the scam before it sees you</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='11' fill='%230B7A4B'/%3E%3C/svg%3E" />
   <style>${css}</style>
 </head>
@@ -396,9 +396,9 @@ export const pageHtml = `<!DOCTYPE html>
     <div class="hero-copy">
       ${logo}
       <h1 id="headline">See the scam<br />before it<br />sees you</h1>
-      <p class="sub">Kagua checks addresses and chats in seconds, so you never have to wonder.</p>
+      <p class="sub">Kagwa Wire checks addresses and chats in seconds, so you never have to wonder.</p>
       <div class="pills">
-        <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagua%20waitlist">Join the waitlist</a>
+        <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a>
         <a class="pill" href="#how">See how it works</a>
       </div>
       <p class="note">Android first. Works with no internet at check time.</p>
@@ -411,7 +411,7 @@ export const pageHtml = `<!DOCTYPE html>
         <h2 id="how-title">How it works</h2>
         <ol class="steps">
           <li><span>1</span><p>Paste or drop whatever you got</p></li>
-          <li><span>2</span><p>Kagua reads it on your phone</p></li>
+          <li><span>2</span><p>Kagwa Wire reads it on your phone</p></li>
           <li><span>3</span><p>You get a straight answer: Stop, Check more or No flags found, with why</p></li>
         </ol>
       </div>
@@ -422,11 +422,11 @@ export const pageHtml = `<!DOCTYPE html>
         <div class="features">
           <article>
             <h3>Address check</h3>
-            <p>Paste an address. Kagua compares it with the frozen list.</p>
+            <p>Paste an address. Kagwa Wire compares it with the frozen list.</p>
           </article>
           <article>
             <h3>Chat check</h3>
-            <p>Drop a chat. Kagua reads it on your phone.</p>
+            <p>Drop a chat. Kagwa Wire reads it on your phone.</p>
           </article>
           <article>
             <h3>Works with no internet at check time</h3>
@@ -440,7 +440,7 @@ export const pageHtml = `<!DOCTYPE html>
     <div class="inner footer-inner">
       ${logo}
       <p class="tag">See the scam before it sees you.</p>
-      <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagua%20waitlist">Join the waitlist</a>
+      <a class="pill" href="mailto:waitlist@kagua.app?subject=Kagwa%20Wire%20waitlist">Join the waitlist</a>
       <p class="wired">Placeholder. To be wired.</p>
     </div>
   </footer>

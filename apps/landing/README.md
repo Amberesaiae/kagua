@@ -1,4 +1,4 @@
-# Kagua landing
+# Kagwa Wire landing
 
 Static landing page. The first paint is HTML and CSS only. There is no JavaScript and no third-party request.
 
