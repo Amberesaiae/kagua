@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/brand/banner.png" alt="Kagwa Wire" width="1280">
+</p>
+
 # Kagwa Wire
 
 An on-phone check before a peer-to-peer USDT release. It reads an address or a chat on the device and shows one level: **Stop**, **Check more**, **No flags found**, or **Can't tell**, with the reason and the text that triggered it.
@@ -133,6 +137,8 @@ Not in the code. `docs/cloud-run/PROGRESS.md` still has receipt reuse (SHA-256, 
 ### Light and dark
 
 Theme tokens live in `apps/mobile/src/theme/tokens.ts`. Settings can follow the system, or force dark or light. The dark background is #050605. The light background is #F3F4EE. Action buttons are lime #C6F432. The Stop screen uses #C42F1F, and that red is only for Stop. Check more uses the warning amber from the same file (#FFB020 on the dark theme). No flags found and Can't tell stay on the theme background.
+
+Brand: the wire logo, by the team.
 
 ![Home screen in the light theme. Expo web build. Same frozen-list dates and the same 9,739 count.](docs/screenshots/light-home.png)
 
