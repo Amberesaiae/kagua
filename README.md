@@ -24,7 +24,9 @@ The pictures in this README are renders of the **Expo web build in a browser**. 
 | Demo video | To be added |
 | QVAC feature | The on-device chat tagger. It returns tags tied to quoted text. It does not choose the level. Screenshot reading uses the QVAC OCR model. Address checks are ordinary code, not the model. |
 | Offline claim | A check does not start a download and does not contain a `fetch` in this repository's own source. The on-device model is meant to be downloaded once, then used with the network off. That phone run has not been done. See [What still needs a network](#what-still-needs-a-network). |
-| Finance actions | None. No wallet, no signing, no transfer. The Wallet Development Kit is listed as cut in `docs/cloud-run/MISSION.md`. |
+| Finance actions | None. No wallet, no signing, no transfer. The Wallet Development Kit is listed as cut in `docs/internal/cloud-run/MISSION.md`. |
+
+[SUBMISSION.md](SUBMISSION.md)
 
 ## The problem
 
@@ -36,7 +38,7 @@ A peer-to-peer USDT trade often ends with one person releasing coins after a cha
 
 The Check more screen tells the trader to open M-Pesa in their own SMS, not the buyer's screenshot. Kagwa Wire does not decide whether a payment image is genuine. Receipt reuse (a hash of a payment image, kept in a local ledger) is named in the mission and is not in the code.
 
-This README does not include fraud statistics, sums of money, or a claim that no other entry does this. `docs/cloud-run/LEARNINGS.md` says those kinds of figures are unverified and stay out of the repo.
+This README does not include fraud statistics, sums of money, or a claim that no other entry does this. `docs/internal/cloud-run/LEARNINGS.md` says those kinds of figures are unverified and stay out of the repo.
 
 ## Who needs it
 
@@ -104,7 +106,7 @@ If the paste is not a TRC-20 or EVM address, the screen says so and asks the tra
 - Look-alike: same network, same length, first four and last four characters match a saved contact, middle differs. That is Stop, with the saved address and the pasted address shown side by side. An exact match of a saved contact is No flags found, and the text says that proves nothing about the trade.
 - Whitespace and invisible paste characters are stripped on the typed address and on saved contacts before the compare.
 
-The frozen list is built by `packages/core/scripts/build-frozen.ts`, which the app does not run. Tron entries are the net of `AddedBlackList` and `RemovedBlackList` events on the Tron USDT contract, pulled from TronGrid on 29 October 2026. EVM entries are the `is_banned` Ethereum rows of the USDT Blacklist Archive snapshot dated 2026-09-07. The archive is CC-BY-4.0, attributed to KYT Group / cryptoalert.report (https://huggingface.co/datasets/cryptoalert/usdt-blacklist-archive). The same provenance file records a cross-check: 16 Tron addresses only in the archive, 1,809 only on the chain pull. The chain is the source used for Tron. The gap is not fully explained. See the open decision in `docs/cloud-run/PROGRESS.md`.
+The frozen list is built by `packages/core/scripts/build-frozen.ts`, which the app does not run. Tron entries are the net of `AddedBlackList` and `RemovedBlackList` events on the Tron USDT contract, pulled from TronGrid on 29 October 2026. EVM entries are the `is_banned` Ethereum rows of the USDT Blacklist Archive snapshot dated 2026-09-07. The archive is CC-BY-4.0, attributed to KYT Group / cryptoalert.report (https://huggingface.co/datasets/cryptoalert/usdt-blacklist-archive). The same provenance file records a cross-check: 16 Tron addresses only in the archive, 1,809 only on the chain pull. The chain is the source used for Tron. The gap is not fully explained. See the open decision in `docs/internal/cloud-run/PROGRESS.md`.
 
 Not being on the list proves nothing. Being on the list is not, by itself, proof of a scam.
 
@@ -132,7 +134,7 @@ The phone screen is `apps/mobile/src/app/scan.tsx`. It uses `expo-camera` and do
 
 ### Receipts
 
-Not in the code. `docs/cloud-run/PROGRESS.md` still has receipt reuse (SHA-256, a perceptual hash, and a ledger) unchecked. SHA-256 in the repository today is the Tron checksum and the hash of the frozen-list file. It is not a receipt check.
+Not in the code. `docs/internal/cloud-run/PROGRESS.md` still has receipt reuse (SHA-256, a perceptual hash, and a ledger) unchecked. SHA-256 in the repository today is the Tron checksum and the hash of the frozen-list file. It is not a receipt check.
 
 ### Light and dark
 
@@ -158,7 +160,7 @@ Direct dependency, from `apps/mobile/package.json` and the lockfile: `@qvac/sdk`
 
 `apps/mobile/app.json` registers the plugin `@qvac/sdk/expo-plugin`. In the installed 0.22.0 package that plugin sets Android `minSdkVersion` 29, NDK `29.0.14206865`, and ABI filter `arm64-v8a` only.
 
-Models, from the catalogue in `@qvac/inference` 0.22.0 (`dist/models/registry/models.js`). The same byte sizes are recorded in `docs/cloud-run/LEARNINGS.md`.
+Models, from the catalogue in `@qvac/inference` 0.22.0 (`dist/models/registry/models.js`). The same byte sizes are recorded in `docs/internal/cloud-run/LEARNINGS.md`.
 
 | Constant | What it is | Registry file | `expectedSize` |
 | --- | --- | --- | --- |
@@ -183,7 +185,7 @@ Files that use QVAC:
 
 The interface is `ModelProvider` in `packages/core/src/provider.ts`. The phone implementation is `createQvacProvider`. The mock is `createMockProvider`, used by tests and by the web build. A provider returns tags and OCR text. It does not return a level.
 
-`docs/cloud-run/PROGRESS.md` says the adapter was written from the npm package's type declarations and shipped examples, because `docs.qvac.tether.io` was blocked in that environment. It has not been checked against that docs site. The handover date on that note is 29 October 2026, 11:10 UTC.
+`docs/internal/cloud-run/PROGRESS.md` says the adapter was written from the npm package's type declarations and shipped examples, because `docs.qvac.tether.io` was blocked in that environment. It has not been checked against that docs site. The handover date on that note is 29 October 2026, 11:10 UTC.
 
 ## Architecture
 
@@ -209,7 +211,7 @@ Address steps timed for the checking screen are Checksum, Network, Frozen list, 
 
 There is no `fetch` in `packages/core/src` or in `apps/mobile`. The app's own check path does not download. These are the network uses that do exist, taken from the code:
 
-1. **Model download, first run, phone only.** `apps/mobile/src/app/setup.tsx` calls `prepare`, which calls `loadModel` for `OCR_LATIN` and `QWEN3_600M_INST_Q4`. The screen text says this is the time Kagua uses the internet, and that the files come from the QVAC model registry. The web build has no provider, so that button does not download. Whether the one-time download is acceptable for the offline demo is an open question in `docs/cloud-run/PROGRESS.md` (the note says to ask the organisers). It is not answered here.
+1. **Model download, first run, phone only.** `apps/mobile/src/app/setup.tsx` calls `prepare`, which calls `loadModel` for `OCR_LATIN` and `QWEN3_600M_INST_Q4`. The screen text says this is the time Kagua uses the internet, and that the files come from the QVAC model registry. The web build has no provider, so that button does not download. Whether the one-time download is acceptable for the offline demo is an open question in `docs/internal/cloud-run/PROGRESS.md` (the note says to ask the organisers). It is not answered here.
 
 2. **Frozen-list refresh, build machine only.** `packages/core/scripts/build-frozen.ts` fetches the Hugging Face parquet and TronGrid events. The file's own comment says it is build-time only and the app never runs it. A running check reads the committed JSON. There is no in-app updater.
 
@@ -219,13 +221,13 @@ There is no `fetch` in `packages/core/src` or in `apps/mobile`. The app's own ch
 
 `getModelInfo` in `@qvac/inference` 0.22.0 stats local cache files for a single-file catalogue model (`fsPromises.stat`, and `isCached` when the size matches). The same handler has a CoreML branch that can call `getRegistryClient()`. The two models Kagwa Wire names do not set `shardMetadata` or `companionSet` on their catalogue entries. `packages/core/src/qvac.ts` comments that the probe must not download. Pull request #1 says this path was not repeated inside a network namespace. An offline-proof script that logs every outbound attempt does not exist yet (`scripts/offline-proof.ts` is unchecked in the progress doc).
 
-`docs/cloud-run/PROGRESS.md` records that a web build, checked in headless Chromium on 29 October 2026 at 09:40 UTC, made 0 requests to other hosts in dark and light. That note is from before the later bug-fix commit. It was not re-run for this README. It is not a phone test, and it is not airplane mode.
+`docs/internal/cloud-run/PROGRESS.md` records that a web build, checked in headless Chromium on 29 October 2026 at 09:40 UTC, made 0 requests to other hosts in dark and light. That note is from before the later bug-fix commit. It was not re-run for this README. It is not a phone test, and it is not airplane mode.
 
 Fonts are loaded from the app bundle (`apps/mobile/src/app/_layout.tsx` says nothing is fetched for them). The web build stores data in `localStorage` rather than downloading the expo-sqlite WASM.
 
 ## Setup and run
 
-Prerequisites written in the repo: Node.js and npm (this repository sets no `engines` field), and for QVAC a physical arm64 phone. `docs/cloud-run/MISSION.md` says Android 12 or newer, and no emulator. The installed Expo plugin sets `minSdkVersion` to 29, which is a lower API floor than Android 12. See [Device, operating system, memory, and licences](#device-operating-system-memory-and-licences). No phone model is confirmed.
+Prerequisites written in the repo: Node.js and npm (this repository sets no `engines` field), and for QVAC a physical arm64 phone. `docs/internal/cloud-run/MISSION.md` says Android 12 or newer, and no emulator. The installed Expo plugin sets `minSdkVersion` to 29, which is a lower API floor than Android 12. See [Device, operating system, memory, and licences](#device-operating-system-memory-and-licences). No phone model is confirmed.
 
 From the repository root, the scripted commands are:
 
@@ -310,7 +312,7 @@ Third-party work to credit:
 
 ## Honest status and known limitations
 
-The last progress note, `docs/cloud-run/PROGRESS.md`, handover dated **29 October 2026, 11:10 UTC**, says this, and it is still the right phone status: core and the Expo app were verified only in the cloud. Nothing has run on a phone. There has been no native build, no model download, no on-device OCR, no on-device tagging, and no offline test on a device. The QVAC adapter had not been checked against `docs.qvac.tether.io`. The Android phone build has not been run. The pictures above are the web build.
+The last progress note, `docs/internal/cloud-run/PROGRESS.md`, handover dated **29 October 2026, 11:10 UTC**, says this, and it is still the right phone status: core and the Expo app were verified only in the cloud. Nothing has run on a phone. There has been no native build, no model download, no on-device OCR, no on-device tagging, and no offline test on a device. The QVAC adapter had not been checked against `docs.qvac.tether.io`. The Android phone build has not been run. The pictures above are the web build.
 
 Pull request #1 (https://github.com/Amberesaiae/kagua/pull/1), which this branch contains, describes fourteen handoff bugs (K1–K14) as fixed in commit `9433161`, with regression tests in `packages/core/test/handoff.test.ts` and `apps/mobile/src/logic/handoff.test.ts`. Those tests passed in the run recorded above. The same pull request says the following were **not** verified:
 
@@ -327,7 +329,7 @@ The web demo tagger is a keyword stand-in. It is not QVAC.
 
 ## Roadmap
 
-From the unchecked progress items and the "cut" list in `docs/cloud-run/MISSION.md`. These are not scheduled, and they are not in the build:
+From the unchecked progress items and the "cut" list in `docs/internal/cloud-run/MISSION.md`. These are not scheduled, and they are not in the build:
 
 - Run the native Android build on a physical arm64 phone, download the two models, and repeat a chat tag and a screenshot read with the network off. Record time, download size, and RAM.
 - Add `scripts/offline-proof.ts` and keep it honest.
@@ -343,4 +345,4 @@ From the unchecked progress items and the "cut" list in `docs/cloud-run/MISSION.
 
 Built solo by Lamptey Isaiah (hacker name: Isaiah Amber), engineer.
 
-There is no `LICENSE` file in this repository. This README does not invent one. Third-party package licences and the CC-BY-4.0 frozen-list credit are in the sections above. Model-weight licences are not yet confirmed.
+Licence: MIT, see LICENSE. Model-weight licences are not yet confirmed.

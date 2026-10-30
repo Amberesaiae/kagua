@@ -58,7 +58,7 @@ Kagwa Wire does not hold funds, sign anything, or send a transaction. "No flags 
 - **Memory:** not measured. Model files total about 398 MB before the detector file. RAM during a check is unknown.
 - **Licences read from the installed tree:** `@qvac/*` packages and `react-native-bare-kit` are Apache-2.0. Expo, React, React Native, `@noble/hashes`, and the icon packages are MIT. TypeScript is Apache-2.0. Vitest and hyparquet are MIT. Geist fonts are MIT AND OFL-1.1. Full table in the README.
 - **Model weight licences:** not confirmed for `Qwen3-0.6B-Q4_0.gguf` or `latin_g2.gguf`.
-- **Repository licence:** there is no `LICENSE` file. **NEEDS OWNER:** choose one or state "none". Nothing is invented here.
+- **Repository licence:** MIT, copyright Lamptey Isaiah. See `LICENSE`.
 - **Hardware limits:** arm64-v8a only. Mission doc says no emulator. 20-second timeout on the tagger; behaviour on a slow phone untested.
 
 ## Features that need a network
@@ -94,7 +94,7 @@ The form's exact field list is not visible to me without logging in. This list f
 | Device and OS used | BLOCKED | No phone run yet |
 | Memory needs, hardware limits | BLOCKED | Not measured |
 | Model licences | BLOCKED | Weight licences unconfirmed. Package licences READY. |
-| Repo LICENSE | NEEDS OWNER | None in repo |
+| Repo LICENSE | READY | MIT, copyright Lamptey Isaiah |
 | Network-dependent features | READY | Above |
 | Demo video, offline, QVAC chat check, airplane mode visible | BLOCKED | Needs a native Android build and a phone run first. Vimeo link: TO BE ADDED |
 | Landing page link | NEEDS OWNER | PR #2 unmerged. Enter "pending" or deploy after merge. |
