@@ -1,8 +1,8 @@
-# Kagua
+# Kagwa Wire
 
 An on-phone check before a peer-to-peer USDT release. It reads an address or a chat on the device and shows one level: **Stop**, **Check more**, **No flags found**, or **Can't tell**, with the reason and the text that triggered it.
 
-Kagua does not hold funds, does not sign anything, and does not send a transaction. "No flags found" means the checks that ran found nothing.
+Kagwa Wire does not hold funds, does not sign anything, and does not send a transaction. "No flags found" means the checks that ran found nothing.
 
 The pictures in this README are renders of the **Expo web build in a browser**. The Android phone build has not been run. On that web build, Screenshot and Scan QR are marked "On the phone", the setup screen shows 0.0 MB because the web build does not carry the model file sizes, and short chat tags are labelled "demo tag, web build". They are not output from the on-device QVAC model.
 
@@ -30,7 +30,7 @@ A peer-to-peer USDT trade often ends with one person releasing coins after a cha
 - A chat that asks for a seed phrase, a PIN or password, or a one-time code.
 - A chat that rushes the trader, pushes the talk off the trading app (WhatsApp, Telegram, Signal, or the Swahili "nje ya"), poses as an exchange or an admin, poses as support, or claims a payment was already made and asks for release.
 
-The Check more screen tells the trader to open M-Pesa in their own SMS, not the buyer's screenshot. Kagua does not decide whether a payment image is genuine. Receipt reuse (a hash of a payment image, kept in a local ledger) is named in the mission and is not in the code.
+The Check more screen tells the trader to open M-Pesa in their own SMS, not the buyer's screenshot. Kagwa Wire does not decide whether a payment image is genuine. Receipt reuse (a hash of a payment image, kept in a local ledger) is named in the mission and is not in the code.
 
 This README does not include fraud statistics, sums of money, or a claim that no other entry does this. `docs/cloud-run/LEARNINGS.md` says those kinds of figures are unverified and stay out of the repo.
 
@@ -69,7 +69,7 @@ The "Send anyway" control stays locked for 30 seconds. When it unlocks, the labe
 
 ### Check more
 
-The headline is "Confirm 3 things before you release." The three boxes are local ticks: open M-Pesa in your own SMS, match the amount, match the sender name. The button stays disabled until all three are ticked, then it returns home. Kagua does not check those three things itself.
+The headline is "Confirm 3 things before you release." The three boxes are local ticks: open M-Pesa in your own SMS, match the amount, match the sender name. The button stays disabled until all three are ticked, then it returns home. Kagwa Wire does not check those three things itself.
 
 Quoted lines come from the written rules or from tags. Model lines are marked. In the web picture below, the long quotes are the code rules and the short quotes are the web demo tagger.
 
@@ -211,7 +211,7 @@ There is no `fetch` in `packages/core/src` or in `apps/mobile`. The app's own ch
 
 4. **Web QR scanner script, only if that screen loads.** The home screen does not open Scan QR on the web. If the web build does load `apps/mobile/src/app/scan.tsx`, that screen imports `expo-camera` 17.0.10. That package's `src/web/useWebQRScanner.ts` starts a worker whose script is `https://cdn.jsdelivr.net/npm/jsqr@1.2.0/dist/jsQR.min.js`. The phone scan screen uses the native camera. This repository does not add that URL itself.
 
-`getModelInfo` in `@qvac/inference` 0.22.0 stats local cache files for a single-file catalogue model (`fsPromises.stat`, and `isCached` when the size matches). The same handler has a CoreML branch that can call `getRegistryClient()`. The two models Kagua names do not set `shardMetadata` or `companionSet` on their catalogue entries. `packages/core/src/qvac.ts` comments that the probe must not download. Pull request #1 says this path was not repeated inside a network namespace. An offline-proof script that logs every outbound attempt does not exist yet (`scripts/offline-proof.ts` is unchecked in the progress doc).
+`getModelInfo` in `@qvac/inference` 0.22.0 stats local cache files for a single-file catalogue model (`fsPromises.stat`, and `isCached` when the size matches). The same handler has a CoreML branch that can call `getRegistryClient()`. The two models Kagwa Wire names do not set `shardMetadata` or `companionSet` on their catalogue entries. `packages/core/src/qvac.ts` comments that the probe must not download. Pull request #1 says this path was not repeated inside a network namespace. An offline-proof script that logs every outbound attempt does not exist yet (`scripts/offline-proof.ts` is unchecked in the progress doc).
 
 `docs/cloud-run/PROGRESS.md` records that a web build, checked in headless Chromium on 29 October 2026 at 09:40 UTC, made 0 requests to other hosts in dark and light. That note is from before the later bug-fix commit. It was not re-run for this README. It is not a phone test, and it is not airplane mode.
 
