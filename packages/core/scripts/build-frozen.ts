@@ -70,7 +70,10 @@ async function main() {
   // The chain is the source of truth for Tron. HF is the cross-check.
   const tron = [...chainTron].filter(isValidTron).sort();
 
-  const out = { date: new Date().toISOString().slice(0, 10), tron, evm: [...evm].sort() };
+  // Tron comes from the chain pull on this run. EVM comes from the archive snapshot, which is older.
+  const EVM_ARCHIVE_DATE = '2026-09-07';
+  const tronDate = new Date().toISOString().slice(0, 10);
+  const out = { date: tronDate, dates: { tron: tronDate, evm: EVM_ARCHIVE_DATE }, tron, evm: [...evm].sort() };
   const json = JSON.stringify(out);
   await mkdir('data', { recursive: true });
   await writeFile('data/frozen.json', json);
@@ -82,8 +85,8 @@ async function main() {
         sha256: createHash('sha256').update(json).digest('hex'),
         counts: { tron: tron.length, evm: out.evm.length },
         sources: [
-          { name: 'USDT Blacklist Archive (ETH + TRON)', url: 'https://huggingface.co/datasets/cryptoalert/usdt-blacklist-archive', licence: 'CC-BY-4.0', attribution: 'KYT Group / cryptoalert.report', use: 'Ethereum frozen addresses; Tron cross-check', rowsBanned: banned.length },
-          { name: 'Tron USDT contract events via TronGrid', url: `https://api.trongrid.io/v1/contracts/${TRON_USDT}/events`, use: 'Tron frozen addresses (net of AddedBlackList and RemovedBlackList)' },
+          { name: 'USDT Blacklist Archive (ETH + TRON)', url: 'https://huggingface.co/datasets/cryptoalert/usdt-blacklist-archive', licence: 'CC-BY-4.0', attribution: 'KYT Group / cryptoalert.report', use: 'Ethereum frozen addresses; Tron cross-check', rowsBanned: banned.length, asOf: EVM_ARCHIVE_DATE },
+          { name: 'Tron USDT contract events via TronGrid', url: `https://api.trongrid.io/v1/contracts/${TRON_USDT}/events`, use: 'Tron frozen addresses (net of AddedBlackList and RemovedBlackList)', asOf: tronDate },
         ],
         crossCheck: { tronOnlyInArchive: onlyHf, tronOnlyOnChain: onlyChain },
         notAnyList: 'A frozen list only catches known freezes. Not being on it proves nothing.',

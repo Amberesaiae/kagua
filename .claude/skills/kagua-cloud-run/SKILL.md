@@ -10,7 +10,7 @@ description: Start/resume/handover loop for the autonomous Kagua cloud run (offl
 3. Continue from the handover's next step, otherwise the first unchecked task (workstream order: B app shell, C QVAC adapters on mock, A remaining core, D offline proof + README).
 4. Work in small batches. After each batch: `npm install` if deps changed, `npm test`, `npx tsc -p packages/core`. Fix failures before moving on. Never end with failing tests.
 5. Commit small with clear messages, push `cloud/build`, tick PROGRESS.md, add a log line. Rebase on `origin/cloud/build` first if needed.
-6. Check time: after Fri 30 Oct 08:00 UTC freeze features; by 12:30 UTC write the final handover and stop. The submission deadline is 14:00 UTC.
+6. Check time: after Fri 30 Oct 08:00 UTC freeze features and work only on README, QVAC details, declarations, offline proof and the submission checklist until the 14:00 UTC deadline. This routine runs until the owner stops it: never stop for good. After the deadline keep polishing and continue the unchecked tasks without changing behaviour the README claims.
 7. Before your context fills or before stopping: update the handover (exact next step), add learnings, commit, push. If everything left needs the owner, say so in the handover and stop.
 8. When you finish something the owner should see, or you are blocked, send a push notification with a short summary.
 

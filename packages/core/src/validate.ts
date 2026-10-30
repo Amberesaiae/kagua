@@ -43,3 +43,8 @@ export function isValid(addr: string, net: Network): boolean {
 export function normalize(addr: string, net: Network): string {
   return net === 'evm' ? addr.toLowerCase() : addr;
 }
+
+/** Drop whitespace and invisible paste characters. Addresses never contain them. */
+export function cleanAddress(raw: string): string {
+  return raw.replace(/[\s\u200b\u200c\u200d\ufeff\u2060\u00a0]/g, '');
+}

@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Kagua",
+    "slug": "kagua",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050605"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#050605"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "app.kagua.mobile"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Kagua uses the camera to read wallet QR codes. Images stay on this phone.",
+          "recordAudioAndroid": false
+        }
+      ],
+      "@qvac/sdk/expo-plugin"
+    ],
+    "scheme": "kagua",
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

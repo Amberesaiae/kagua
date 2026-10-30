@@ -1,6 +1,12 @@
 {
   "name": "kagua",
   "private": true,
-  "workspaces": ["packages/*"],
-  "scripts": { "test": "npm test -w @kagua/core" }
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "npm test -w @kagua/core -w @kagua/mobile",
+    "typecheck": "tsc -p packages/core && tsc -p apps/mobile"
+  }
 }
