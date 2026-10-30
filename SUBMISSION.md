@@ -43,9 +43,7 @@ Kagwa Wire does not hold funds, sign anything, or send a transaction. "No flags 
 
 ## Team (up to three)
 
-- Tish Amos, GitHub Amberesaiae. Role: NEEDS OWNER (not stated).
-- Lamptey Isaiah (hacker name: Isaiah Amber), engineer. Relayed to me by another assistant as coming from the owner. NEEDS OWNER to confirm the spelling and the name to enter on DoraHacks.
-- No other members confirmed. Add a third only if one exists.
+- Lamptey Isaiah (hacker name: Isaiah Amber), engineer. Solo build, team size 1. NEEDS OWNER to confirm the spelling and the name to enter on DoraHacks.
 
 ## Built during the event, and existing code
 
@@ -88,7 +86,7 @@ The form's exact field list is not visible to me without logging in. This list f
 | One-line pitch | READY | See above |
 | Track | READY | Offline AI apps |
 | Problem, target user | READY | See above |
-| Team members (up to 3) | NEEDS OWNER | Tish Amos and Lamptey Isaiah (Isaiah Amber). Confirm names and roles, add both to the Build |
+| Team members (up to 3) | NEEDS OWNER | Solo build: Lamptey Isaiah (Isaiah Amber), engineer. Confirm spelling and DoraHacks name, then add to the Build |
 | Repository link | NEEDS OWNER | Link works. `main` lacks `apps/` until PR #1 is merged, and already has an earlier `packages/core` slice. Owner merges. |
 | Setup instructions and dependencies | NEEDS OWNER | In README on PR #3. Reaches `main` only after merge. |
 | What was built during the event, existing code disclosure | NEEDS OWNER | Drafted above. Confirm. |
