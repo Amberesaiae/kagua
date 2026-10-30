@@ -19,7 +19,7 @@ The pictures in this README are renders of the **Expo web build in a browser**. 
 | Event | AI Yako 2026, on DoraHacks. The project mission names QVAC, Tether, and Node NBO. Page: https://dorahacks.io/hackathon/ai-yako/detail |
 | Track | Offline AI apps |
 | Deadline in the mission doc | Friday 30 October 2026, 14:00 UTC |
-| Team | Tish Amos. GitHub: [Amberesaiae](https://github.com/Amberesaiae) |
+| Team | Lamptey Isaiah (hacker name: Isaiah Amber), engineer. Built solo. |
 | Repository | https://github.com/Amberesaiae/kagua |
 | Demo video | To be added |
 | QVAC feature | The on-device chat tagger. It returns tags tied to quoted text. It does not choose the level. Screenshot reading uses the QVAC OCR model. Address checks are ordinary code, not the model. |
@@ -138,7 +138,7 @@ Not in the code. `docs/cloud-run/PROGRESS.md` still has receipt reuse (SHA-256, 
 
 Theme tokens live in `apps/mobile/src/theme/tokens.ts`. Settings can follow the system, or force dark or light. The dark background is #050605. The light background is #F3F4EE. Action buttons are lime #C6F432. The Stop screen uses #C42F1F, and that red is only for Stop. Check more uses the warning amber from the same file (#FFB020 on the dark theme). No flags found and Can't tell stay on the theme background.
 
-Brand: the wire logo, by the team.
+Brand: the wire logo.
 
 ![Home screen in the light theme. Expo web build. Same frozen-list dates and the same 9,739 count.](docs/screenshots/light-home.png)
 
@@ -297,7 +297,7 @@ Model-weight licences for `Qwen3-0.6B-Q4_0.gguf` and `latin_g2.gguf` are **not y
 
 ## Built during the event, and what is third-party
 
-Every commit in this repository is dated **29 October 2026** (UTC). There is no earlier commit. The first commit, `19be1ac` at 08:49 UTC by Amberesaiae, adds the core package, the frozen-list build, the design canvases, and the cloud-run docs. Later the same day: the `ModelProvider` and mock, the Expo app, local storage, QR parsing, the QVAC adapter, and the phone wiring. Commit `9433161` at 21:11 UTC fixes the QA handoff bugs in the chat rules, addresses, and the check screen. Git authors on those commits are Amberesaiae, Claude, and Cursor Agent. The submission team is one person, named above.
+Every commit in this repository is dated **29 October 2026** (UTC). There is no earlier commit. The first commit, `19be1ac` at 08:49 UTC by Amberesaiae, adds the core package, the frozen-list build, the design canvases, and the cloud-run docs. Later the same day: the `ModelProvider` and mock, the Expo app, local storage, QR parsing, the QVAC adapter, and the phone wiring. Commit `9433161` at 21:11 UTC fixes the QA handoff bugs in the chat rules, addresses, and the check screen. Git authors on those commits are Amberesaiae, Claude, and Cursor Agent. It was built solo.
 
 This README does not state the hackathon's start time. The mission doc states the submission deadline as 30 October 2026, 14:00 UTC. Whether work before a given start time is allowed is not answered in this repository.
 
@@ -341,6 +341,6 @@ From the unchecked progress items and the "cut" list in `docs/cloud-run/MISSION.
 
 ## Team and licence
 
-Team: Tish Amos. GitHub: [Amberesaiae](https://github.com/Amberesaiae).
+Built solo by Lamptey Isaiah (hacker name: Isaiah Amber), engineer.
 
 There is no `LICENSE` file in this repository. This README does not invent one. Third-party package licences and the CC-BY-4.0 frozen-list credit are in the sections above. Model-weight licences are not yet confirmed.
