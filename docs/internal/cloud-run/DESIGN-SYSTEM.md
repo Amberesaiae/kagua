@@ -1,6 +1,6 @@
 # Kagua design system
 
-Source of truth for look and feel. The approved mockups are in `docs/design/canvases/*.dc.html` (dark: Main, Scanning, Stop, CheckMore; light: the *Light files, which import the dark file with `theme="light"`). Read them for exact markup and values. Premium = restraint, depth, bold type, few words.
+Source of truth for look and feel. The approved mockups are in `docs/internal/canvases/*.dc.html` (dark: Main, Scanning, Stop, CheckMore; light: the *Light files, which import the dark file with `theme="light"`). Read them for exact markup and values. Premium = restraint, depth, bold type, few words.
 
 ## Colour tokens
 | Token | Dark | Light |

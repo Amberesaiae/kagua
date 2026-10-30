@@ -2,7 +2,7 @@
 
 Kagua is an offline scam check for USDT traders. Before a trader releases or sends USDT, it checks an address or a chat on the phone and shows one level: **Stop**, **Check more** or **No flags found**, with the reason and the exact text that triggered it. Nothing leaves the device.
 
-Built for the AI Yako hackathon (QVAC, Tether, Node NBO). Submission deadline: **Fri 30 Oct 2026, 14:00 UTC** on DoraHacks (https://dorahacks.io/hackathon/ai-yako/detail). Track: Offline AI apps (700 USDt) and the overall prize. Full spec: `docs/PRD.pdf` (cut-down MVP, revised 29 Oct 04:00 UTC).
+Built for the AI Yako hackathon (QVAC, Tether, Node NBO). Submission deadline: **Fri 30 Oct 2026, 14:00 UTC** on DoraHacks (https://dorahacks.io/hackathon/ai-yako/detail). Track: Offline AI apps (700 USDt) and the overall prize. Full spec: `docs/internal/PRD.pdf` (cut-down MVP, revised 29 Oct 04:00 UTC).
 
 ## Principles (never break)
 1. **Code decides, the model tags.** Risk levels come from fixed, tested code. A model may add reasons and raise none -> check_more. It can never lower a level and never produce Stop. (`packages/core/src/chat.ts`, covered by tests.)
@@ -28,7 +28,7 @@ Cut (future work, say so in the README): vision receipt extraction, provider for
 - Never run the frozen-list build script in the cloud unless the network allows it; the committed `packages/core/data/frozen.json` is the source until the owner refreshes it.
 - Never commit secrets, API keys, `.env`, or large model files. Models download on the phone at first run.
 - Test values only. No real messages, accounts or funds.
-- Owner-only decisions go under "Decisions for the owner" in `docs/cloud-run/PROGRESS.md`; carry on with other work.
+- Owner-only decisions go under "Decisions for the owner" in `docs/internal/cloud-run/PROGRESS.md`; carry on with other work.
 - Phone testing (QVAC on the device) is owner-only. Build everything else so it runs on the mock provider, and list exactly what the owner must test.
 - Commit small, push `cloud/build` after each finished task, tick PROGRESS.md and add a log line. If another run pushed, rebase on `origin/cloud/build` first.
 - Timeline: feature freeze Fri 30 Oct 08:00 UTC; until the 14:00 UTC deadline only README, QVAC details, device/network declaration, offline-proof output and the submission checklist. **This routine runs until the owner stops it.** Never decide to stop for good. After the deadline keep improving (polish, tests, docs, accessibility, next unchecked tasks) without changing behaviour the README claims. If nothing can be done without the owner, update the handover briefly and end that run; the next one continues.
